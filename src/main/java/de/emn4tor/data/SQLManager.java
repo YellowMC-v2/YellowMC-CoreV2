@@ -7,9 +7,7 @@ package de.emn4tor.data;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.emn4tor.YellowMCCoreV2;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
