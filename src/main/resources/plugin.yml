@@ -3,3 +3,7 @@ version: '1.0.0'
 main: de.emn4tor.YellowMCCoreV2
 api-version: '1.21'
 authors: [ Emn4tor ]
+
+commands:
+  hello:
+    description: A simple hello command

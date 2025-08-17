@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id("xyz.jpenilla.run-paper") version "2.3.1"
+
+    id 'org.sonarqube' version '6.2.0.5505'
     id("com.gradleup.shadow") version "9.0.0-rc2"
 }
 
@@ -30,7 +32,7 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.4")
     }
 }
 
@@ -62,7 +64,16 @@ processResources {
 }
 
 shadowJar {
+    exclude 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/NOTICE', 'META-INF/NOTICE.txt'
     mergeServiceFiles()
 }
+
+sonar {
+    properties {
+        property "sonar.projectKey", "YellowMC-Core"
+    }
+}
+
+
 
 build.dependsOn shadowJar
