@@ -39,6 +39,9 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (moduleManager != null) {
+            moduleManager.disableModules(this);
+        }
         SQLManager.getInstance().close();
     }
 
