@@ -3,6 +3,7 @@ package de.emn4tor;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.SQLManager;
 import de.emn4tor.modules.TestModule.TestModule;
+import de.emn4tor.modules.playtime.PlaytimeModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class YellowMCCoreV2 extends JavaPlugin {
@@ -32,6 +33,7 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         moduleManager = new ModuleManager();
 
         moduleManager.registerModule(new TestModule());
+        moduleManager.registerModule(new PlaytimeModule());
 
         moduleManager.enableModules(this);
 

@@ -7,3 +7,6 @@ authors: [ Emn4tor ]
 commands:
   hello:
     description: A simple hello command
+  playtime:
+    description: Check your playtime or another player's playtime
+    aliases: [spielzeit]
