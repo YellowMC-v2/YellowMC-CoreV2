@@ -10,6 +10,8 @@ import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.economy.coins.api.EconomyManager;
 import de.emn4tor.modules.economy.coins.commands.BalanceCommand;
 import de.emn4tor.modules.economy.coins.commands.PayCommand;
+import de.emn4tor.modules.economy.rubies.RubiesCommand;
+import de.emn4tor.modules.economy.rubies.RubyHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class EconomyModule implements Module {
     private static EconomyManager economyManager;
-
 
     @Override
     public String getName() {
@@ -31,6 +32,10 @@ public class EconomyModule implements Module {
         plugin.getCommand("balance").setExecutor(new BalanceCommand(economyManager));
         plugin.getCommand("pay").setExecutor(new PayCommand(economyManager, YellowMCCoreV2.getRedisManager()));
         plugin.getCommand("ecoadmin").setExecutor(new AdminCommand(economyManager));
+
+        //Rubies
+        RubyHandler.initialize();
+        plugin.getCommand("rubies").setExecutor(new RubiesCommand());
     }
 
     @Override
