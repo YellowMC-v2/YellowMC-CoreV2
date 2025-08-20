@@ -7,6 +7,7 @@ package de.emn4tor.modules.starteritems;
 
 import de.emn4tor.Module;
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.modules.economy.coins.api.EconomyHandler;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;

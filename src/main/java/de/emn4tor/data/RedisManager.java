@@ -36,10 +36,14 @@ public class RedisManager {
         this.redisPassword = config.getString("redis.password");
 
         pub = new Jedis(redisHost, redisPort);
-        pub.auth(redisPassword);
+        if (redisPassword != null && !redisPassword.isEmpty()) {
+            pub.auth(redisPassword);
+        }
 
         sub = new Jedis(redisHost, redisPort);
-        sub.auth(redisPassword);
+        if (redisPassword != null && !redisPassword.isEmpty()) {
+            sub.auth(redisPassword);
+        }
     }
 
 

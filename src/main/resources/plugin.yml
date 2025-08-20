@@ -10,3 +10,11 @@ commands:
   playtime:
     description: Check your playtime or another player's playtime
     aliases: [spielzeit]
+  balance:
+    description: Check your balance or another player's balance
+    aliases: [konto, geld]
+  pay:
+    description: Pay another player
+    aliases: [bezahlen]
+  ecoadmin:
+    description: Manage the economy system
