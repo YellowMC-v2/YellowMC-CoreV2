@@ -4,8 +4,11 @@ import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
 import de.emn4tor.modules.TestModule.TestModule;
+import de.emn4tor.modules.commands.CommandsModule;
 import de.emn4tor.modules.economy.EconomyModule;
+import de.emn4tor.modules.muzzle.MuzzleModule;
 import de.emn4tor.modules.playtime.PlaytimeModule;
+import de.emn4tor.modules.starteritems.StarterItemsModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class YellowMCCoreV2 extends JavaPlugin {
@@ -42,6 +45,9 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         moduleManager.registerModule(new TestModule());
         moduleManager.registerModule(new PlaytimeModule());
         moduleManager.registerModule(new EconomyModule());
+        moduleManager.registerModule(new StarterItemsModule());
+        moduleManager.registerModule(new CommandsModule());
+        moduleManager.registerModule(new MuzzleModule());
 
         moduleManager.enableModules(this);
 
