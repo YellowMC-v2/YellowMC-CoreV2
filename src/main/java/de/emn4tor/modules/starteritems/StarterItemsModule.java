@@ -41,13 +41,13 @@ public class StarterItemsModule implements Module, Listener {
     }
 
     @EventHandler
-    public void onFirstPlayerJoin(PlayerJoinEvent event, YellowMCCoreV2 plugin) {
+    public void onFirstPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("core.firstjoin")) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (!"Lobby".equals(plugin.getConfig().getString("server-name"))){
+                    if (!"Lobby".equals(YellowMCCoreV2.getInstance().getConfig().getString("server-name"))){
                         player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
                         player.getInventory().setItem(0, new ItemStack(Material.STONE_SWORD));
                         player.getInventory().setItem(1, new ItemStack(Material.STONE_PICKAXE));
@@ -62,7 +62,7 @@ public class StarterItemsModule implements Module, Listener {
                         api.getUserManager().saveUser(user);
                     }
                 }
-            }.runTaskLater(plugin, 2 * 20);
+            }.runTaskLater(YellowMCCoreV2.getInstance(), 2 * 20);
         }
     }
 

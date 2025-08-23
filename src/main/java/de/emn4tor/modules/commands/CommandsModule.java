@@ -16,10 +16,12 @@ import de.emn4tor.modules.commands.social.InstagramCommand;
 import de.emn4tor.modules.commands.social.TikTokCommand;
 import de.emn4tor.modules.commands.social.YouTubeCommand;
 import de.emn4tor.modules.commands.workstations.*;
+import de.emn4tor.modules.muzzle.ChatManager;
 import de.emn4tor.utils.cooldown.CooldownManager;
 
 public class CommandsModule implements Module {
     private CooldownManager cooldownManager;
+    private ChatManager chatManager;
     @Override
     public String getName() {
         return "CommandsModule";
@@ -27,6 +29,7 @@ public class CommandsModule implements Module {
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
+        chatManager = new ChatManager();
         cooldownManager = new CooldownManager(YellowMCCoreV2.getRedisManager());
         //Admin Commands
         plugin.getCommand("boughtrank").setExecutor(new BoughtRankCommand(chatManager));
@@ -46,7 +49,7 @@ public class CommandsModule implements Module {
         plugin.getCommand("instagram").setExecutor(new InstagramCommand());
         // workstation commands
         plugin.getCommand("anvil").setExecutor(new AnvilCommand());
-        plugin.getCommand("workbench").setExecutor(new CraftingCommand());
+        plugin.getCommand("craft").setExecutor(new CraftingCommand());
         plugin.getCommand("enderchest").setExecutor(new EnderChestCommand());
         plugin.getCommand("loom").setExecutor(new LoomCommand());
         plugin.getCommand("smithingtable").setExecutor(new SmithingTableCommand());

@@ -33,7 +33,6 @@ commands:
 
   rubies:
     description: Zeigt deinen Kontostand oder verwaltet Rubine (Admin)
-    usage: /rubies [add|set|remove|setoffline|addoffline] <Spieler> <Menge>
     permission: rubies.use
   balance:
     description: Check your balance or another player's balance

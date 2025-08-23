@@ -12,10 +12,6 @@ import de.emn4tor.modules.economy.coins.commands.BalanceCommand;
 import de.emn4tor.modules.economy.coins.commands.PayCommand;
 import de.emn4tor.modules.economy.rubies.RubiesCommand;
 import de.emn4tor.modules.economy.rubies.RubyHandler;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 
 public class EconomyModule implements Module {
     private static EconomyManager economyManager;
@@ -34,6 +30,7 @@ public class EconomyModule implements Module {
         plugin.getCommand("ecoadmin").setExecutor(new AdminCommand(economyManager));
 
         //Rubies
+        RubyHandler.init(plugin);
         RubyHandler.initialize();
         plugin.getCommand("rubies").setExecutor(new RubiesCommand());
     }

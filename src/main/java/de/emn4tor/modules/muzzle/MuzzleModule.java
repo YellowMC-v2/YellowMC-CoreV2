@@ -10,8 +10,10 @@ import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.muzzle.bans.BanCommand;
 import de.emn4tor.modules.muzzle.bans.BanManager;
 import de.emn4tor.modules.muzzle.bans.KickCommand;
+import de.emn4tor.modules.muzzle.bans.LoginListener;
 import de.emn4tor.modules.muzzle.mute.CheckMuteCommand;
 import de.emn4tor.modules.muzzle.mute.MuteCommand;
+import de.emn4tor.modules.muzzle.mute.MuteManager;
 import de.emn4tor.modules.muzzle.mute.UnmuteCommand;
 
 import java.io.BufferedReader;
@@ -34,16 +36,21 @@ public class MuzzleModule implements Module {
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
+        MuteManager muteManager = new MuteManager();
+
         //Register word list
         registerWordList(plugin);
         chatManager = new ChatManager();
         banManager = new BanManager();
-        plugin.getCommand("cleatchat").setExecutor(new ClearChatCommand(chatManager));
+        plugin.getCommand("clearchat").setExecutor(new ClearChatCommand(chatManager));
         plugin.getCommand("mute").setExecutor(new MuteCommand(plugin));
         plugin.getCommand("unmute").setExecutor(new UnmuteCommand(plugin));
         plugin.getCommand("kick").setExecutor(new KickCommand(banManager, plugin));
         plugin.getCommand("ban").setExecutor(new BanCommand(banManager, plugin));
         plugin.getCommand("checkmute").setExecutor(new CheckMuteCommand(plugin));
+
+        plugin.getServer().getPluginManager().registerEvents(new ChatListener(muteManager, chatManager), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new LoginListener(banManager, plugin), plugin);
 
     }
 

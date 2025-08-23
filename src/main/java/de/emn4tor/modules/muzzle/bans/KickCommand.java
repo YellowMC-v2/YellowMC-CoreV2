@@ -5,7 +5,6 @@ package de.emn4tor.modules.muzzle.bans;
  *  @created: 08.05.2025
  */
 
-import de.emn4tor.YellowMCCore;
 import de.emn4tor.YellowMCCoreV2;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;

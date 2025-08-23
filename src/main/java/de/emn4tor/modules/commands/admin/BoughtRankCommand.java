@@ -5,6 +5,7 @@ package de.emn4tor.modules.commands.admin;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.modules.muzzle.ChatManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
