@@ -38,14 +38,15 @@ public class SignCommand implements CommandExecutor {
         if (player.hasPermission("core.sign")){
             if (cooldownManager.hasCooldown(player.getUniqueId().toString(), "sign")) {
                 player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Du kannst aktuell keine Items signieren, warte noch <yellow>" + cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "sign") + "<red>!"));
+                return true;
             }
             else{
                 signItem(player, String.join(" ", args));
                 cooldownManager.setCooldown(player.getUniqueId().toString(), "sign", 6 * 60 * 60 * 1000); // 6 hours cooldown
+                return true;
             }
         }
         return false;
-
     }
 
 
