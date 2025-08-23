@@ -31,15 +31,19 @@ public class RedisManager {
     public void connect(FileConfiguration config) {
         if (pub != null) return;
 
-        this.redisHost = config.getString("redis.host");
-        this.redisPort = config.getInt("redis.port");
-        this.redisPassword = config.getString("redis.password");
+        this.redisHost = config.getString("credentials.redis.host");
+        this.redisPort = config.getInt("credentials.redis.port");
+        this.redisPassword = config.getString("credentials.redis.password");
 
         pub = new Jedis(redisHost, redisPort);
-        pub.auth(redisPassword);
+        if (redisPassword != null && !redisPassword.isEmpty()) {
+            pub.auth(redisPassword);
+        }
 
         sub = new Jedis(redisHost, redisPort);
-        sub.auth(redisPassword);
+        if (redisPassword != null && !redisPassword.isEmpty()) {
+            sub.auth(redisPassword);
+        }
     }
 
 
@@ -55,7 +59,9 @@ public class RedisManager {
         new Thread(() -> {
             try {
                 Jedis subscriber = new Jedis(redisHost, redisPort);
-                subscriber.auth(redisPassword);
+                if (redisPassword != null && !redisPassword.isEmpty()) {
+                    subscriber.auth(redisPassword);
+                }
                 System.out.println("[RedisManager] Subscribing to channel: " + channel);
                 subscriber.subscribe(listener, channel);
             } catch (Exception e) {

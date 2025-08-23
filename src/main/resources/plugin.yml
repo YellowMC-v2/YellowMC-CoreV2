@@ -7,3 +7,255 @@ authors: [ Emn4tor ]
 commands:
   hello:
     description: A simple hello command
+
+
+
+  playtime:
+    description: Check your playtime or another player's playtime
+    usage: /playtime [player]
+    aliases: [spielzeit]
+
+
+  citybuild:
+    aliases: CityBuild
+    description: Teleports you to the citybuild world
+  farmworld:
+    aliases: Farmwelt
+    description: Teleports you to the farm world
+  lobby:
+    aliases:
+      - Hub
+      - Lobby
+    description: Teleports you to the lobby
+  mines:
+    aliases: Mine
+    description: Teleports you to the mine
+
+  rubies:
+    description: Zeigt deinen Kontostand oder verwaltet Rubine (Admin)
+    permission: rubies.use
+  balance:
+    description: Check your balance or another player's balance
+    usage: /balance [player]
+    aliases: [ bal, money, kontostand ]
+  pay:
+    description: Pay another player
+    usage: /pay <player> <amount>
+  ecoadmin:
+    description: Admin commands for economy management
+    usage: /ecoadmin <give|take|set> <player> <amount>
+    permission: core.economy.admin
+
+  anvil:
+    description: Opens the anvil GUI
+    usage: /anvil
+    aliases: [amboss]
+    permission: core.anvil.command
+  craft:
+    description: Opens the crafting GUI
+    usage: /craft
+    aliases: [crafting, werkbank]
+    permission: core.craft.command
+  enderchest:
+    description: Opens the ender chest GUI
+    usage: /enderchest
+    aliases: [ec]
+    permission: core.enderchest.command
+  loom:
+    description: Opens the loom GUI
+    usage: /loom
+    aliases: [webstuhl]
+    permission: core.loom.command
+  smithingtable:
+    description: Opens the smithing table GUI
+    usage: /smithingtable
+    aliases: [schmiedetisch]
+    permission: core.smithingtable.command
+  stonecutter:
+    description: Opens the stonecutter GUI
+    usage: /stonecutter
+    aliases: [steinmetz]
+    permission: core.stonecutter.command
+
+  foodshop:
+    description: Opens the foodshop GUI
+    usage: /foodshop
+    aliases: [fsh]
+    permission: core.citybuild.foodshop
+  woodshop:
+    description: Opens the woodshop GUI
+    usage: /woodshop
+    aliases: [wsh]
+    permission: core.citybuild.woodshop
+  plantshop:
+    description: Opens the plantshop GUI
+    usage: /plantshop
+    aliases: [psh]
+    permission: core.citybuild.plantshop
+  tempshop:
+    description: Opens the temporary shop with daily special items
+    usage: /tempshop
+    aliases: [ dailyshop, specialshop ]
+    permission: core.tempshop.command
+  shops:
+    description: Opens the shop GUI
+    usage: /shops
+    permission: core.shops.command
+  keyshop:
+    description: Opens the key shop GUI
+    usage: /keyshop
+    permission: core.keyshop.command
+
+  discord:
+    description: Opens the Discord link
+    aliases: [dc]
+  instagram:
+    description: Opens the Instagram link
+    aliases: [insta, Insta]
+  tiktok:
+    description: Opens the TikTok link
+    aliases: [Tiktok]
+  youtube:
+    description: Opens the YouTube link
+    aliases: [Youtube]
+
+  getmeta:
+    description: Get metadata of an item
+    usage: /getmeta
+    permission: core.getmeta
+
+  fly:
+    description: Allows players to fly
+    usage: /fly [player]
+    aliases: [Fly]
+    permission: core.fly
+  gamemode:
+    description: Changes the player's gamemode
+    usage: /gamemode <mode>
+    aliases: [gm]
+    permission: core.admin.gamemode
+  sign:
+    description: Signs an item
+    permission: core.sign
+  boughtrank:
+    permission: core.admin.boughtrank
+
+  hat:
+    description: Wear an item as a hat
+    usage: /hat
+    permission: core.hat
+  heal:
+    description: Heals the player
+    permission: core.heal
+  feed:
+    description: Feeds the player
+    usage: /feed [player]
+    permission: core.feed
+  head:
+    description: Gives the player a custom head
+    usage: /head [player]
+    permission: core.head
+  spawn:
+    aliases:
+      - Spawn
+    description: Teleports the player to the spawn
+  #rtp:
+  #  description: Randomly teleports the player
+  #  usage: /rtp [world]
+  #  aliases: [randomtp]
+  updateprefix:
+    description: Updates the player's prefix
+  clearchat:
+    description: Clears the chat
+    aliases:
+      - cc
+    usage: /clearchat
+    permission: core.clearchat
+
+  mute:
+    description: Mute a player with optional duration.
+    usage: /mute <player> <reason> [duration]
+    permission: core.mute
+    permission-message: You do not have permission to mute players.
+
+  unmute:
+    description: Unmute a player.
+    usage: /unmute <player>
+    permission: core.unmute
+    permission-message: You do not have permission to unmute players.
+
+  checkmute:
+    description: Check if a player is muted and for how long.
+    usage: /checkmute <player>
+    permission: core.checkmute
+    permission-message: You do not have permission to check mute status.
+
+  kick:
+    description: Kicks a player from the server
+    usage: /kick <player> <reason>
+    permission: core.kick
+  ban:
+    description: Bans a player from the server
+    usage: /ban <player> <reason> [duration]
+    permission: core.ban
+  cooldownbypass:
+    description: Bypass cooldowns for commands
+    usage: /cooldownbypass [player]
+    permission: core.cooldownbypass
+  getredeemables:
+    description: Get redeemable items for a player
+    permission: core.getredeemables
+
+  worldmanager:
+    description: Manage worlds
+    usage: /worldmanager <subcommand>
+    aliases:
+      - wm
+    permission: core.worldmanager.use
+  flyspeed:
+    description: Set or check fly speed
+    usage: /flyspeed [player] [speed]
+    aliases:
+      - fs
+    permission: core.flyspeed.use
+
+  scenes:
+    description: Manage scenes
+    aliases:
+      - scene
+    permission: scenes.use
+
+
+
+    #synced shit
+  plot:
+    description: Plot commands
+    usage: /plot <subcommand>
+    aliases:
+      - p
+      - p2
+
+  nether:
+    description: Nether command
+    usage: /nether
+    aliases:
+      - Nether
+
+
+permissions:
+  playtime.use:
+    description: Allows players to check their own playtime
+    default: true
+  playtime.other:
+    description: Allows players to check other players' playtime
+    default: op
+  economy.admin:
+    description: Allows access to admin commands
+    default: op
+  economy.balance.others:
+    description: Allows checking other players' balances
+    default: op
+  rubies.use:
+    default: true
+  rubies.admin:
+    default: op
