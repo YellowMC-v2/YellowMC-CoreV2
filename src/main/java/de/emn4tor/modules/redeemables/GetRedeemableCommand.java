@@ -23,9 +23,9 @@ public class GetRedeemableCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) commandSender;
         if (args.length == 0) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Nutze /reedemable <yellow><coins|rubies></yellow> <amount> [<player>]</red>"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Nutze /redeemable <yellow><coins|rubies></yellow> <amount> [<player>]</red>"));
         } else {
-            NamespacedKey key = new NamespacedKey("reedemable", "amount");
+            NamespacedKey key = new NamespacedKey("redeemable", "amount");
 
             if (args[0].equalsIgnoreCase("coins")) {
                 ItemStack itemStack = new ItemStack(Material.PAPER);
