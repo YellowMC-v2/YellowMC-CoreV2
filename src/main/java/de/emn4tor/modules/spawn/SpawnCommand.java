@@ -34,7 +34,7 @@ public class SpawnCommand implements CommandExecutor, Listener {
             return true;
         }
         if(args.length == 1 && args[0].equalsIgnoreCase("set")){
-            if (!(sender.hasPermission("mines.setspawn"))){
+            if (!(sender.hasPermission("core.setspawn"))){
                 sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Du hast keine Berechtigung, diesen Befehl auszuführen!"));
                 return true;
             }

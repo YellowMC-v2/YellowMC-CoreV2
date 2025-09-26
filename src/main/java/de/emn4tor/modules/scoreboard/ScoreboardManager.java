@@ -106,9 +106,9 @@ public class ScoreboardManager implements Listener {
                 updateLine(board, 2, "»   <yellow>" + formatRubies(rubies));
 
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    Team tagTeam = board.getTeam("tag_ " + onlinePlayer.getName());
+                    Team tagTeam = board.getTeam("tag_" + onlinePlayer.getName());
                     if (tagTeam == null) {
-                        tagTeam = board.registerNewTeam("tag_ " + onlinePlayer.getName());
+                        tagTeam = board.registerNewTeam("tag_" + onlinePlayer.getName());
                     }
                     tagTeam.prefix(rankManager.getPlayerTag(onlinePlayer));
                     tagTeam.addEntry(onlinePlayer.getName());
