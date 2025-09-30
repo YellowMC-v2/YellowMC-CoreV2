@@ -32,14 +32,14 @@ public class RedeemListener implements Listener {
             Player player = event.getPlayer();
             if (cmd == 100) {
                 EconomyHandler.addCoins(player, amount);
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + amount + "<reset> ꑻ <green>erhalten!"));
+                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + amount + "<reset> <glyph:coin> <green>erhalten!"));
                 ItemStack item = event.getItem().clone();
                 item.setAmount(1);
                 player.getInventory().removeItem(item);
             }
             if (cmd == 101) {
                 RubyHandler.addRubies(player.getUniqueId(), amount);
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + amount + "<reset> ꑺ <green>erhalten!"));
+                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + amount + "<reset> <glyph:ruby> <green>erhalten!"));
                 ItemStack item = event.getItem().clone();
                 item.setAmount(1);
                 player.getInventory().removeItem(item);

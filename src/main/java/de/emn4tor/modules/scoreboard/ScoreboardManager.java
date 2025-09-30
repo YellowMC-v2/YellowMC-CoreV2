@@ -54,18 +54,14 @@ public class ScoreboardManager implements Listener {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-                Objective obj = board.registerNewObjective("stats", "dummy", mm.deserialize("ꑷ"));
+                Objective obj = board.registerNewObjective("stats", "dummy", mm.deserialize("<glyph:yellowmc_logo_small>"));
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-                createLine(board, obj, 10, " ");
-                createLine(board, obj, 9, "<white>Profil:</white>");
-                createLine(board, obj, 8, "»   <yellow>" + player.getName());
-                createLine(board, obj, 7, "<white>Playtime:</white>");
-                createLine(board, obj, 6, "»   <yellow>" + formatHours(playtime));
-                createLine(board, obj, 5, "<white>Coins: </white>");
-                createLine(board, obj, 4, "»   <yellow>" + formatBalance(balance));
-                createLine(board, obj, 3, "<white>Rubine: </white>");
-                createLine(board, obj, 2, "»   <yellow>" + formatRubies(rubies));
+                createLine(board, obj, 6, " ");
+                createLine(board, obj, 5, "<#FFD700>\uD83D\uDC64 <reset>Profil: <#FFD700>" + player.getName());
+                createLine(board, obj, 4, "<#FCE300>⌚ <reset>Playtime: <#FCE300>" + formatHours(playtime));
+                createLine(board, obj, 3, "<#00FC00><b>⛃ <reset>Coins: <#00FC00>" + formatBalance(balance));
+                createLine(board, obj, 2, "<#FC0800>\uD83D\uDC8E <reset>Rubine: <#FC0800>" + formatRubies(rubies));
                 createLine(board, obj, 1, " ");
 
                 // === Apply Nametag Prefix ===
@@ -101,9 +97,9 @@ public class ScoreboardManager implements Listener {
                 Scoreboard board = player.getScoreboard();
                 if (board == null || board.getObjective("stats") == null) return;
 
-                updateLine(board, 6, "»   <yellow>" + formatHours(playtime));
-                updateLine(board, 4, "»   <yellow>" + formatBalance(balance));
-                updateLine(board, 2, "»   <yellow>" + formatRubies(rubies));
+                updateLine(board, 4, "<#FCE300>⌚ <reset>Playtime: <#FCE300>" + formatHours(playtime));
+                updateLine(board, 3, "<#00FC00><b>⛃ <reset>Coins: <#00FC00>" + formatBalance(balance));
+                updateLine(board, 2, "<#FC0800>\uD83D\uDC8E <reset>Rubine: <#FC0800>" + formatRubies(rubies));
 
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     Team tagTeam = board.getTeam("tag_" + onlinePlayer.getName());
@@ -143,10 +139,10 @@ public class ScoreboardManager implements Listener {
     }
 
     private String formatBalance(int balance) {
-        return balance + "<reset>ꑻ";
+        return balance + "<glyph:coin>";
     }
 
     public String formatRubies(int amount) {
-        return amount + "<reset>ꑺ";
+        return amount + "<glyph:ruby>";
     }
 }

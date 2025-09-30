@@ -18,22 +18,22 @@ public class RankManager {
 
 
     public RankManager() {
-        ranks.put("group.owner", MiniMessage.miniMessage().deserialize("<white>ꚯ</white>"));
-        ranks.put("group.admin", MiniMessage.miniMessage().deserialize("<white>ꚮ</white>"));
-        ranks.put("group.devop", MiniMessage.miniMessage().deserialize("<white>ꚭ</white>"));
-        ranks.put("group.srdeveloper", MiniMessage.miniMessage().deserialize("<white>ꚬ</white>"));
-        ranks.put("group.developer", MiniMessage.miniMessage().deserialize("<white>ꚫ</white>"));
-        ranks.put("group.mod", MiniMessage.miniMessage().deserialize("<white>ꚪ</white>"));
-        ranks.put("group.jrmod", MiniMessage.miniMessage().deserialize("<white>ꚩ</white>"));
-        ranks.put("group.support", MiniMessage.miniMessage().deserialize("<white>ꚨ</white>"));
-        ranks.put("group.builder", MiniMessage.miniMessage().deserialize("<white>ꚧ</white>"));
-        ranks.put("group.designer", MiniMessage.miniMessage().deserialize("<white>ꚦ</white>"));
-        ranks.put("group.content", MiniMessage.miniMessage().deserialize("<white>ꚥ</white>"));
-        ranks.put("group.platin", MiniMessage.miniMessage().deserialize("<white>ꚤ</white>"));
-        ranks.put("group.gold", MiniMessage.miniMessage().deserialize("<white>ꚣ</white>"));
-        ranks.put("group.silver", MiniMessage.miniMessage().deserialize("<white>ꚢ</white>"));
-        ranks.put("group.bronze", MiniMessage.miniMessage().deserialize("<white>ꚡ</white>"));
-        ranks.put("group.default", MiniMessage.miniMessage().deserialize("<white>ꚠ</white>"));
+        ranks.put("group.owner", MiniMessage.miniMessage().deserialize("<glyph:ranks17>"));
+        ranks.put("group.admin", MiniMessage.miniMessage().deserialize("<glyph:ranks16>"));
+        ranks.put("group.devop", MiniMessage.miniMessage().deserialize("<glyph:ranks15>"));
+        ranks.put("group.srdeveloper", MiniMessage.miniMessage().deserialize("<glyph:ranks14>"));
+        ranks.put("group.developer", MiniMessage.miniMessage().deserialize("<glyph:ranks11>"));
+        ranks.put("group.mod", MiniMessage.miniMessage().deserialize("<glyph:ranks13>"));
+        ranks.put("group.jrmod", MiniMessage.miniMessage().deserialize("<glyph:ranks12>"));
+        ranks.put("group.support", MiniMessage.miniMessage().deserialize("<glyph:ranks7>"));
+        ranks.put("group.builder", MiniMessage.miniMessage().deserialize("<glyph:ranks8>"));
+        ranks.put("group.designer", MiniMessage.miniMessage().deserialize("<glyph:ranks10>"));
+        ranks.put("group.content", MiniMessage.miniMessage().deserialize("<glyph:ranks6>"));
+        ranks.put("group.platin", MiniMessage.miniMessage().deserialize("<glyph:ranks5>"));
+        ranks.put("group.gold", MiniMessage.miniMessage().deserialize("<glyph:ranks4>"));
+        ranks.put("group.silver", MiniMessage.miniMessage().deserialize("<glyph:ranks3>"));
+        ranks.put("group.bronze", MiniMessage.miniMessage().deserialize("<glyph:ranks2>"));
+        ranks.put("group.default", MiniMessage.miniMessage().deserialize("<glyph:ranks1>"));
 
 
 

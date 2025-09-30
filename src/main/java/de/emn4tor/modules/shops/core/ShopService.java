@@ -27,7 +27,7 @@ public class ShopService {
                 stack.setItemMeta(meta);
             }
             player.getInventory().addItem(stack);
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + item.getPrice() + "<reset>ꑻ <green>ausgegeben!"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + item.getPrice() + "<reset><glyph:coin> <green>ausgegeben!"));
             return true;
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Du hast nicht genug Geld!"));
