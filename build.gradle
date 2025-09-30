@@ -28,8 +28,8 @@ repositories {
     //    url "https://repo.yellowmc.de/releases/"
     //    name = "yellowmcApi"
     //    credentials {
-    //        username = "admin"
-    //        password = "8hFDc05VbeJfS5k10flTREkgUiQeUb2six8CZHxmj9U6YBNdnKM9u9++P1CpjiaC"
+    //        username = System.getenv("YELLOWMC_USER")
+    //        password = System.getenv("YELLOWMC_PASSWORD")
     //    }
     //}
 }
