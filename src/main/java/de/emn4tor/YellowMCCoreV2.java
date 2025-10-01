@@ -6,6 +6,7 @@ import de.emn4tor.data.SQLManager;
 import de.emn4tor.modules.TestModule.TestModule;
 import de.emn4tor.modules.commands.CommandsModule;
 import de.emn4tor.modules.economy.EconomyModule;
+import de.emn4tor.modules.furnitureshop.FurnitureShopModule;
 import de.emn4tor.modules.muzzle.MuzzleModule;
 import de.emn4tor.modules.playtime.PlaytimeModule;
 import de.emn4tor.modules.redeemables.RedeemableModule;
@@ -54,6 +55,7 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         moduleManager.registerModule(new ScoreboardModule());
         moduleManager.registerModule(new RedeemableModule());
         moduleManager.registerModule(new ShopsModule());
+        moduleManager.registerModule(new FurnitureShopModule());
 
         moduleManager.enableModules(this);
 
