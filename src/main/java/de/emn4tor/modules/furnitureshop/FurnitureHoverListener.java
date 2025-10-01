@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.nexomc.nexo.api.NexoFurniture;
 import com.nexomc.nexo.api.NexoItems;
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.modules.economy.rubies.RubyHandler;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -17,7 +18,9 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -74,6 +77,30 @@ public class FurnitureHoverListener implements Listener {
         }
     }
 
-
-
+    @EventHandler
+    public void onRightClickFurniture(PlayerInteractEvent event) {
+        if(!event.getAction().isRightClick()) return;
+        if(event.getHand() != EquipmentSlot.HAND) return;
+        Player player = event.getPlayer();
+        if (NexoFurniture.findTargetFurniture(player) != null) {
+            if (player.getInventory().firstEmpty() == -1) {
+                player.sendRichMessage("<red>Your inventory is full! Please free up some space before buying an item.");
+                return;
+            }
+            ItemDisplay itemDisplay = NexoFurniture.findTargetFurniture(player);
+            String id = NexoFurniture.furnitureMechanic(itemDisplay).getItemID();
+            Integer price = furniturePriceMap.get(id);
+            if (price != null) {
+                if (RubyHandler.getRubiesAsync(player.getUniqueId()).join() < price) {
+                    player.sendRichMessage("<red>You don't have enough rubies to buy this item!");
+                    return;
+                }
+                player.sendRichMessage("<green>You bought a " + PlainTextComponentSerializer.plainText().serialize(NexoItems.itemFromId(id).getItemName()) + " for <gold>" + price + " <glyph:ruby>");
+                player.getInventory().addItem(NexoItems.itemFromId(id).build());
+                RubyHandler.removeRubies(player.getUniqueId(), price);
+            } else {
+                player.sendRichMessage("<red>Could not find the price for this item. Please contact an admin.");
+            }
+        }
+    }
 }
