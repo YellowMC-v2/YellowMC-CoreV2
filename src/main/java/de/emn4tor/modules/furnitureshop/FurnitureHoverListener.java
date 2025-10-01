@@ -13,6 +13,7 @@ import de.emn4tor.modules.economy.rubies.RubyHandler;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -41,6 +42,7 @@ public class FurnitureHoverListener implements Listener {
     @EventHandler
     public void onFurnitureHover(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (!isInShop(player)) return;
 
         if (NexoFurniture.findTargetFurniture(player) != null) {
             ItemDisplay itemDisplay = NexoFurniture.findTargetFurniture(player);
@@ -103,4 +105,32 @@ public class FurnitureHoverListener implements Listener {
             }
         }
     }
+
+    private boolean isInShop(Player player) {
+        return isBetween(player,
+                new Location(Bukkit.getWorld("world"), 100, 60, 100),
+                new Location(Bukkit.getWorld("world"), 200, 80, 200)
+        );
+    }
+
+    public boolean isBetween(Player player, Location loc1, Location loc2) {
+        Location pLoc = player.getLocation();
+
+        if (!pLoc.getWorld().equals(loc1.getWorld()) || !pLoc.getWorld().equals(loc2.getWorld()))
+            return false;
+
+        double minX = Math.min(loc1.getX(), loc2.getX());
+        double maxX = Math.max(loc1.getX(), loc2.getX());
+
+        double minY = Math.min(loc1.getY(), loc2.getY());
+        double maxY = Math.max(loc1.getY(), loc2.getY());
+
+        double minZ = Math.min(loc1.getZ(), loc2.getZ());
+        double maxZ = Math.max(loc1.getZ(), loc2.getZ());
+
+        return pLoc.getX() >= minX && pLoc.getX() <= maxX
+                && pLoc.getY() >= minY && pLoc.getY() <= maxY
+                && pLoc.getZ() >= minZ && pLoc.getZ() <= maxZ;
+    }
+
 }
