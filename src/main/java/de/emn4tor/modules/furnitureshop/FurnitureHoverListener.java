@@ -10,6 +10,8 @@ import com.nexomc.nexo.api.NexoFurniture;
 import com.nexomc.nexo.api.NexoItems;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.economy.rubies.RubyHandler;
+import fi.septicuss.tooltips.api.TooltipsAPI;
+import fi.septicuss.tooltips.managers.theme.Theme;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -26,6 +28,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,6 +41,8 @@ public class FurnitureHoverListener implements Listener {
                     "smelter", 150
             )
     );
+
+    private final Map<Player, Integer> tooltipTasks = new HashMap<>();
 
     @EventHandler
     public void onFurnitureHover(PlayerMoveEvent event) {
@@ -70,13 +75,26 @@ public class FurnitureHoverListener implements Listener {
     }
 
     private void showPrice(Player player, String furnitureId) {
+        if (tooltipTasks.containsKey(player)) {
+            Bukkit.getScheduler().cancelTask(tooltipTasks.get(player));
+        }
         Integer price = furniturePriceMap.get(furnitureId);
         String itemName = PlainTextComponentSerializer.plainText().serialize(NexoItems.itemFromId(furnitureId).getItemName());
         if (price != null) {
-            player.sendActionBar(MiniMessage.miniMessage().deserialize( itemName + " <gray>Price: <white>" + price + " <glyph:ruby> <#ffa500>(Click to buy)"));
+            TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>Price: <white>" + price + " {default/ruby}\n<#ffa500>(Click to buy {default/right-click}<#ffa500>)"));
         } else {
-            player.sendActionBar(MiniMessage.miniMessage().deserialize(itemName + " <gray>Couldnt find a price <glyph:ruby> <red>(Contact an admin)"));
+            TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>Couldnt find a price \n<red>(Contact an admin)"));
         }
+        int taskId = Bukkit.getScheduler().runTaskLater(YellowMCCoreV2.getInstance(), () -> {
+            if (NexoFurniture.findTargetFurniture(player) != null) {
+                showPrice(player, furnitureId);
+            } else {
+                player.clearTitle();
+                tooltipTasks.remove(player);
+            }
+        }, 20L).getTaskId();
+
+        tooltipTasks.put(player, taskId);
     }
 
     @EventHandler
@@ -128,9 +146,10 @@ public class FurnitureHoverListener implements Listener {
         double minZ = Math.min(loc1.getZ(), loc2.getZ());
         double maxZ = Math.max(loc1.getZ(), loc2.getZ());
 
-        return pLoc.getX() >= minX && pLoc.getX() <= maxX
-                && pLoc.getY() >= minY && pLoc.getY() <= maxY
-                && pLoc.getZ() >= minZ && pLoc.getZ() <= maxZ;
+        return true;
+        //return pLoc.getX() >= minX && pLoc.getX() <= maxX
+        //        && pLoc.getY() >= minY && pLoc.getY() <= maxY
+        //        && pLoc.getZ() >= minZ && pLoc.getZ() <= maxZ;
     }
 
 }

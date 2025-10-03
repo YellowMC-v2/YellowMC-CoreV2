@@ -9,6 +9,11 @@ commands:
     description: A simple hello command
 
 
+  debugfurniture:
+    description: Debug furniture command
+    usage: /debugfurniture
+    permission: core.debugfurniture
+
 
   playtime:
     description: Check your playtime or another player's playtime

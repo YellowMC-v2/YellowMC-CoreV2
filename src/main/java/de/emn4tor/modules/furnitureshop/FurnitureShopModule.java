@@ -12,6 +12,7 @@ public class FurnitureShopModule implements Module {
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
         plugin.getServer().getPluginManager().registerEvents(new FurnitureHoverListener(), plugin);
+        plugin.getCommand("debugfurniture").setExecutor(new DebugCMD());
     }
 
     @Override
