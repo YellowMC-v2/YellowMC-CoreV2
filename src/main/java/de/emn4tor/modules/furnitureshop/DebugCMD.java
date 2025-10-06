@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class DebugCMD implements CommandExecutor {
 
-    FurnitureSpawner furnitureSpawner = new FurnitureSpawner(YellowMCCoreV2.getInstance());
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        furnitureSpawner.startGenerationTaskForAllRooms();
+        assert FurnitureShopModule.getFurnitureSpawner() != null;
+        FurnitureShopModule.getFurnitureSpawner().startGenerationTaskForAllRooms();
         return true;
     }
 }
