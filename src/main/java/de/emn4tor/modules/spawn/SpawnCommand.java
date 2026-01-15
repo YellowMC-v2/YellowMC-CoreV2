@@ -5,6 +5,7 @@ package de.emn4tor.modules.spawn;
  *  @created: 23.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -47,7 +48,7 @@ public class SpawnCommand implements CommandExecutor, Listener {
             }
 
         }
-        return false;
+        return true;
     }
 
     private void saveSpawn(Location loc) {
@@ -61,8 +62,8 @@ public class SpawnCommand implements CommandExecutor, Listener {
         plugin.saveConfig();
     }
 
-    private Location getSpawn() {
-        FileConfiguration config = plugin.getConfig();
+    public static Location getSpawn() {
+        FileConfiguration config = YellowMCCoreV2.getInstance().getConfig();
         String worldName = config.getString("spawn.world");
         double x = config.getDouble("spawn.x");
         double y = config.getDouble("spawn.y");
@@ -70,6 +71,6 @@ public class SpawnCommand implements CommandExecutor, Listener {
         float yaw = (float) config.getDouble("spawn.yaw");
         float pitch = (float) config.getDouble("spawn.pitch");
 
-        return new Location(plugin.getServer().getWorld(worldName), x, y, z, yaw, pitch);
+        return new Location(YellowMCCoreV2.getInstance().getServer().getWorld(worldName), x, y, z, yaw, pitch);
     }
 }

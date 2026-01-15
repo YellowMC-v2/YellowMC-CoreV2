@@ -43,18 +43,18 @@ public class VaultEconomyImpl extends AbstractEconomy {
     @Override
     public String format(double v) {
         long coins = (long) v;
-        String name = (coins == 1) ? "Münze" : "Münzen";
+        String name = (coins == 1) ? "Coin" : "Coins";
         return String.format("%,d %s", coins, name);
     }
 
     @Override
     public String currencyNamePlural() {
-        return "Münzen";
+        return "Coins";
     }
 
     @Override
     public String currencyNameSingular() {
-        return "Münze";
+        return "Coin";
     }
 
     @Override

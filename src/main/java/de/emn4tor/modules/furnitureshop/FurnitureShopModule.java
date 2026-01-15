@@ -2,8 +2,13 @@ package de.emn4tor.modules.furnitureshop;
 
 import de.emn4tor.Module;
 import de.emn4tor.YellowMCCoreV2;
+import org.bukkit.Bukkit;
 
 public class FurnitureShopModule implements Module {
+    @Override
+    public String getServerName() {
+        return "lobby";
+    }
 
     private static FurnitureShopModule instance;
     private FurnitureSpawner furnitureSpawner;
@@ -15,10 +20,17 @@ public class FurnitureShopModule implements Module {
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
-        instance = this;
-        furnitureSpawner = new FurnitureSpawner(YellowMCCoreV2.getInstance());
-        plugin.getServer().getPluginManager().registerEvents(new FurnitureHoverListener(), plugin);
-        plugin.getCommand("debugfurniture").setExecutor(new DebugCMD());
+        if(plugin.getConfig().getBoolean("furniture.enabled")) {
+            FurnitureShopManager manager = new FurnitureShopManager();
+            instance = this;
+            manager.createFurniturePricesTable();
+            manager.loadFurniturePrices();
+            furnitureSpawner = new FurnitureSpawner(YellowMCCoreV2.getInstance());
+            plugin.getServer().getPluginManager().registerEvents(new FurnitureHoverListener(), plugin);
+            plugin.getCommand("debugfurniture").setExecutor(new DebugCMD());
+            plugin.getCommand("furnitureshop").setExecutor(new FurnitureShopCommand());
+            FurnitureShopManager.startRefreshRunner();
+        }
     }
 
     @Override

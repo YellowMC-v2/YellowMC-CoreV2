@@ -5,11 +5,13 @@ package de.emn4tor;
  *  @created: 24.07.2025
  */
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleManager {
 
+    private String serverName = YellowMCCoreV2.getInstance().getConfig().getString("server-name");
     private final List<Module> modules = new ArrayList<>();
 
     public void registerModule(Module module) {
@@ -19,7 +21,13 @@ public class ModuleManager {
     public void enableModules(YellowMCCoreV2 plugin) {
         for (Module module : modules) {
             try {
-                module.onEnable(plugin);
+                if (serverName.equals(module.getServerName()) || module.getServerName() == null) {
+                    module.onEnable(plugin);
+                }
+                else {
+                    plugin.getLogger().info("Module " + module.getName() + " skipped");
+                    }
+                plugin.getLogger().info(module.getServerName() + " skipped");
             } catch (Exception e) {
                 plugin.getLogger().severe("Failed to enable module: " + module.getName() + " - " + e.getMessage());
                 continue; // Skip this module and continue with the next one

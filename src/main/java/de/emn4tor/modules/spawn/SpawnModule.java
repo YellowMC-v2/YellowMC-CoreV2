@@ -14,6 +14,12 @@ public class SpawnModule implements Module {
         return "SpawnModule";
     }
 
+
+    @Override
+    public String getServerName() {
+        return "spawn";
+    }
+
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
         plugin.getCommand("spawn").setExecutor(new SpawnCommand(plugin));

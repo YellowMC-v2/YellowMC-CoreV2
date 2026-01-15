@@ -13,9 +13,12 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
+import de.emn4tor.YellowMCCoreV2;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -64,29 +67,31 @@ public class FurnitureSpawner {
     }
 
     private void initializeRooms() {
-        // Room 1 configuration
-        rooms.put(1, new RoomConfig(
-                1, // schematic count
-                new Location(Bukkit.getWorld(worldName), -93, 74, 118),
-                BlockVector3.at(-89, 78, 126),
-                BlockVector3.at(-98, 73, 119)
-        ));
+        FileConfiguration config = YellowMCCoreV2.getInstance().getConfig();
 
-        // Room 2 configuration
-        rooms.put(2, new RoomConfig(
-                2, // schematic count
-                new Location(Bukkit.getWorld(worldName), -93, 74, 118),
-                BlockVector3.at(-98, 78, 132),
-                BlockVector3.at(-88, 72, 127)
-        ));
+        for (int i = 1; i <= 3; i++) {
+            String basePath = "furniture.room_" + i + ".";
 
-        // Room 3 configuration
-        rooms.put(3, new RoomConfig(
-                1, // schematic count
-                new Location(Bukkit.getWorld(worldName), -93, 74, 118),
-                BlockVector3.at(-84, 78, 122),
-                BlockVector3.at(-87, 72, 126)
-        ));
+            int schematicCount = config.getInt(basePath + "roomCount", 1);
+            Location roomLocation = new Location(
+                    Bukkit.getWorld(config.getString(basePath + "world", worldName)),
+                    config.getDouble(basePath + "spawn.x", 0),
+                    config.getDouble(basePath + "spawn.y", 0),
+                    config.getDouble(basePath + "spawn.z", 0)
+            );
+            BlockVector3 vector1 = BlockVector3.at(
+                    config.getInt(basePath + "vector1.x", 0),
+                    config.getInt(basePath + "vector1.y", 0),
+                    config.getInt(basePath + "vector1.z", 0)
+            );
+            BlockVector3 vector2 = BlockVector3.at(
+                    config.getInt(basePath + "vector2.x", 0),
+                    config.getInt(basePath + "vector2.y", 0),
+                    config.getInt(basePath + "vector2.z", 0)
+            );
+
+            rooms.put(i, new RoomConfig(schematicCount, roomLocation, vector1, vector2));
+        }
     }
 
     /**
@@ -112,10 +117,15 @@ public class FurnitureSpawner {
             return;
         }
 
+        // Kick players from the region
+        kickPlayersFromRegion();
+        // Close doors
+        closeDoors();
+
         // Clear the room first
         clearRoom(config);
 
-        // Wait 10 seconds, then place new furniture
+        // Wait 30 seconds, then place new furniture
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -123,7 +133,7 @@ public class FurnitureSpawner {
                 String schematicName = "furniture_" + roomId + "_" + schematicId;
                 placeFurnitureSchematic(config.pasteLocation, schematicName);
             }
-        }.runTaskLater(plugin, 200L); // 200 ticks = 10 seconds
+        }.runTaskLater(plugin, 20 * 30L); // 20 ticks * 30 seconds
     }
 
     /**
@@ -139,38 +149,94 @@ public class FurnitureSpawner {
     }
 
     /**
+     *  Kicks all players from the area if any are present
+     */
+    private void kickPlayersFromRegion() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if(FurnitureHoverListener.isInShop(player)) {
+                player.teleport(new Location(Bukkit.getWorld(worldName), -71, 63, -119, 90, 0));
+                player.sendRichMessage("<yellow>You have been moved out of the furniture shop, we are rearranging things!");
+            }
+        }
+    }
+
+    /**
+     * Closes the doors of the furniture shop
+     */
+    private void closeDoors() {
+        org.bukkit.World bukkitWorld = Bukkit.getWorld(worldName);
+        if (bukkitWorld == null) {
+            logger.severe("World '" + worldName + "' not found!");
+            return;
+        }
+
+        int x1 = 66, y1 = 65, z1 = -117;
+        int x2 = 66, y2 = 68, z2 = -121;
+
+        int minX = Math.min(x1, x2);
+        int maxX = Math.max(x1, x2);
+        int minY = Math.min(y1, y2);
+        int maxY = Math.max(y1, y2);
+        int minZ = Math.min(z1, z2);
+        int maxZ = Math.max(z1, z2);
+
+        Bukkit.getScheduler().runTask(YellowMCCoreV2.getInstance(), () -> {
+            for (int x = minX; x <= maxX; x++) {
+                for (int y = minY; y <= maxY; y++) {
+                    for (int z = minZ; z <= maxZ; z++) {
+                        bukkitWorld.getBlockAt(x, y, z).setType(Material.SPRUCE_PLANKS);
+                    }
+                }
+            }
+
+            Bukkit.getScheduler().runTaskLater(YellowMCCoreV2.getInstance(), () -> {
+                for (int x = minX; x <= maxX; x++) {
+                    for (int y = minY; y <= maxY; y++) {
+                        for (int z = minZ; z <= maxZ; z++) {
+                            bukkitWorld.getBlockAt(x, y, z).setType(Material.AIR);
+                        }
+                    }
+                }
+            }, 600L); // 30 seconds = 600 ticks
+        });
+    }
+
+
+
+
+    /**
      * Clears a room's content and entities
      */
     private void clearRoom(RoomConfig config) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                try {
-                    org.bukkit.World bukkitWorld = Bukkit.getWorld(worldName);
-                    if (bukkitWorld == null) {
-                        logger.severe("World '" + worldName + "' not found!");
-                        return;
-                    }
-
-                    World weWorld = BukkitAdapter.adapt(bukkitWorld);
-                    CuboidRegion region = new CuboidRegion(weWorld, config.clearPos1, config.clearPos2);
-
-                    // Clear blocks asynchronously with WorldEdit
-                    try (EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld)) {
-                        editSession.setBlocks(region, BukkitAdapter.adapt(Material.AIR.createBlockData()));
-                    }
-
-                    // Remove entities (must be done sync)
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            removeEntitiesInRegion(bukkitWorld, region);
-                        }
-                    }.runTask(plugin);
-
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error clearing room", e);
+            try {
+                org.bukkit.World bukkitWorld = Bukkit.getWorld(worldName);
+                if (bukkitWorld == null) {
+                    logger.severe("World '" + worldName + "' not found!");
+                    return;
                 }
+
+                World weWorld = BukkitAdapter.adapt(bukkitWorld);
+                CuboidRegion region = new CuboidRegion(weWorld, config.clearPos1, config.clearPos2);
+
+                // Clear blocks asynchronously with WorldEdit
+                try (EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld)) {
+                    editSession.setBlocks(region, BukkitAdapter.adapt(Material.AIR.createBlockData()));
+                }
+
+                // Remove entities (must be done sync)
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        removeEntitiesInRegion(bukkitWorld, region);
+                    }
+                }.runTask(plugin);
+
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "Error clearing room", e);
+            }
             }
         }.runTaskAsynchronously(plugin);
     }

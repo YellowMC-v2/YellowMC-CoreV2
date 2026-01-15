@@ -13,6 +13,8 @@ commands:
     description: Debug furniture command
     usage: /debugfurniture
     permission: core.debugfurniture
+  furnitureshop:
+    permission: core.furnitureshop
 
 
   playtime:

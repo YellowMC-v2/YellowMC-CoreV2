@@ -12,6 +12,7 @@ import de.emn4tor.modules.playtime.PlaytimeModule;
 import de.emn4tor.modules.redeemables.RedeemableModule;
 import de.emn4tor.modules.scoreboard.ScoreboardModule;
 import de.emn4tor.modules.shops.ShopsModule;
+import de.emn4tor.modules.spawn.SpawnModule;
 import de.emn4tor.modules.starteritems.StarterItemsModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,6 +57,7 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         moduleManager.registerModule(new RedeemableModule());
         moduleManager.registerModule(new ShopsModule());
         moduleManager.registerModule(new FurnitureShopModule());
+        moduleManager.registerModule(new SpawnModule());
 
         moduleManager.enableModules(this);
 

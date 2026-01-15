@@ -15,7 +15,6 @@ public class FlySpeedCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendRichMessage("<red>Nur Spieler können diesen Befehl benutzen.");
             return true;
         }
 

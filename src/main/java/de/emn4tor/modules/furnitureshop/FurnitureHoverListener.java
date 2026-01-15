@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -33,14 +34,6 @@ import java.util.Map;
 
 
 public class FurnitureHoverListener implements Listener {
-
-    Map<String, Integer> furniturePriceMap = new HashMap<>(
-            Map.of(
-                    "hcs_chair", 50,
-                    "hcs_counter_inner_end", 100,
-                    "smelter", 150
-            )
-    );
 
     private final Map<Player, Integer> tooltipTasks = new HashMap<>();
 
@@ -78,7 +71,7 @@ public class FurnitureHoverListener implements Listener {
         if (tooltipTasks.containsKey(player)) {
             Bukkit.getScheduler().cancelTask(tooltipTasks.get(player));
         }
-        Integer price = furniturePriceMap.get(furnitureId);
+        Integer price = FurnitureShopManager.getFurniturePriceMap().get(furnitureId);
         String itemName = PlainTextComponentSerializer.plainText().serialize(NexoItems.itemFromId(furnitureId).getItemName());
         if (price != null) {
             TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>Price: <white>" + price + " {default/ruby}\n<#ffa500>(Click to buy {default/right-click}<#ffa500>)"));
@@ -99,6 +92,7 @@ public class FurnitureHoverListener implements Listener {
 
     @EventHandler
     public void onRightClickFurniture(PlayerInteractEvent event) {
+        if (!isInShop(event.getPlayer())) return;
         if(!event.getAction().isRightClick()) return;
         if(event.getHand() != EquipmentSlot.HAND) return;
         Player player = event.getPlayer();
@@ -109,7 +103,7 @@ public class FurnitureHoverListener implements Listener {
             }
             ItemDisplay itemDisplay = NexoFurniture.findTargetFurniture(player);
             String id = NexoFurniture.furnitureMechanic(itemDisplay).getItemID();
-            Integer price = furniturePriceMap.get(id);
+            Integer price = FurnitureShopManager.getFurniturePriceMap().get(id);
             if (price != null) {
                 if (RubyHandler.getRubiesAsync(player.getUniqueId()).join() < price) {
                     player.sendRichMessage("<red>You don't have enough rubies to buy this item!");
@@ -124,14 +118,19 @@ public class FurnitureHoverListener implements Listener {
         }
     }
 
-    private boolean isInShop(Player player) {
+    public static boolean isInShop(Player player) {
+        World w = Bukkit.getWorld("world");
+
         return isBetween(player,
-                new Location(Bukkit.getWorld("world"), 100, 60, 100),
-                new Location(Bukkit.getWorld("world"), 200, 80, 200)
+                new Location(w, 65, 73, -115),
+                new Location(w, 44, 64, -123)
+        ) || isBetween(player,
+                new Location(w, 47, 72, -132),
+                new Location(w, 58, 64, -111)
         );
     }
 
-    public boolean isBetween(Player player, Location loc1, Location loc2) {
+    public static boolean isBetween(Player player, Location loc1, Location loc2) {
         Location pLoc = player.getLocation();
 
         if (!pLoc.getWorld().equals(loc1.getWorld()) || !pLoc.getWorld().equals(loc2.getWorld()))
@@ -146,10 +145,9 @@ public class FurnitureHoverListener implements Listener {
         double minZ = Math.min(loc1.getZ(), loc2.getZ());
         double maxZ = Math.max(loc1.getZ(), loc2.getZ());
 
-        return true;
-        //return pLoc.getX() >= minX && pLoc.getX() <= maxX
-        //        && pLoc.getY() >= minY && pLoc.getY() <= maxY
-        //        && pLoc.getZ() >= minZ && pLoc.getZ() <= maxZ;
+        return pLoc.getX() >= minX && pLoc.getX() <= maxX
+            && pLoc.getY() >= minY && pLoc.getY() <= maxY
+            && pLoc.getZ() >= minZ && pLoc.getZ() <= maxZ;
     }
 
 }

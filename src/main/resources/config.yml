@@ -16,3 +16,6 @@ hikari:
   connectionTimeout: 30000
   idleTimeout: 600000
   leakDetectionThreshold: 2000
+
+furniture:
+  enabled: false

@@ -21,6 +21,15 @@ public interface Module {
     String getName();
 
     /**
+     * Optional: Only enable the module if the server has a specific name.
+     *
+     * @return server name or null if no specific server name is required
+     */
+    default String getServerName() {
+        return null;
+    }
+
+    /**
      * Called when the module is enabled.
      * Use this to register commands, events, or initialize resources.
      *
@@ -35,4 +44,5 @@ public interface Module {
      * @param plugin the main plugin instance
      */
     void onDisable(YellowMCCoreV2 plugin);
+
 }

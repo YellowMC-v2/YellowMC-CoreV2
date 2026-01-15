@@ -44,8 +44,7 @@ public class HealCommand implements CommandExecutor {
                 target.setHealth(20);
                 target.setFoodLevel(20);
                 target.sendMessage(mm.deserialize("<green>Du wurdest geheilt!</green>"));
-                player.sendMessage(mm.deserialize("<green>Du hast <yellow>" + target.getName() + "</yellow> geheilt!</green>"));
-            } else {
+                player.sendMessage(mm.deserialize("<green>Du hast <yellow>" + target.getName() + "</yellow> geheilt!</green>"));            } else {
                 player.sendMessage(mm.deserialize("<red>Der Spieler ist nicht online!</red>"));
             }
             return true;

@@ -74,8 +74,8 @@ public class HeadCommand implements CommandExecutor {
         if (meta == null) return head;
 
         meta.setOwningPlayer(target);
-        meta.displayName(mm.deserialize("<green>" + target.getName() + "'s Kopf"));
-        meta.lore(List.of(mm.deserialize("<gray>Ausgestellt am <yellow>" + DATE_FORMAT.format(java.time.LocalDateTime.now()) + "</yellow>")));
+        meta.displayName(mm.deserialize("<green>" + target.getName() + "'s Head"));
+        meta.lore(List.of(mm.deserialize("<gray>Created on: <yellow>" + DATE_FORMAT.format(java.time.LocalDateTime.now()) + "</yellow>")));
         head.setItemMeta(meta);
 
         return head;
