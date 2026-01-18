@@ -26,21 +26,22 @@ repositories {
     }
     maven { url "https://repo.codemc.org/repository/maven-public/" }
     maven { url "https://maven.enginehub.org/repo/" }
-    //maven {
-    //    url "https://repo.yellowmc.de/releases/"
-    //    name = "yellowmcApi"
-    //    credentials {
-    //        username = System.getenv("YELLOWMC_USER")
-    //        password = System.getenv("YELLOWMC_PASSWORD")
-    //    }
-    //}
+    repositories {
+        maven {
+            url = uri("https://repo.yellowmc.de/releases/")
+            name = "api"
+            credentials {
+                username = System.getenv("YELLOWMC_USER")
+                password = System.getenv("YELLOWMC_PASSWORD")
+            }
+        }
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     implementation ('redis.clients:jedis:6.0.0')
     implementation ('com.zaxxer:HikariCP:6.3.2')
-
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly 'net.luckperms:api:5.5'
     compileOnly("com.nexomc:nexo:1.17.0")
@@ -50,7 +51,7 @@ dependencies {
 
     compileOnly "de.tr7zw:item-nbt-api-plugin:2.10.0"
     compileOnly( 'com.sk89q.worldedit:worldedit-bukkit:7.3.0')
-    //implementation("de.yellowmc:api:1.0-SNAPSHOT")
+    compileOnly "de.emn4tor:api:1.0-SNAPSHOT"
 }
 
 tasks {
