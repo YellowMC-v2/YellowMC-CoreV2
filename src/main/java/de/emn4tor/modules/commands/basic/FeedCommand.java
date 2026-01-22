@@ -5,6 +5,8 @@ package de.emn4tor.modules.commands.basic;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.utils.cooldown.CooldownManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
@@ -12,6 +14,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class FeedCommand implements CommandExecutor {
     private final MiniMessage mm = MiniMessage.miniMessage();
@@ -28,14 +32,14 @@ public class FeedCommand implements CommandExecutor {
 
         if (args.length == 1) {
             if (!player.hasPermission("core.feed.others")) {
-                player.sendMessage(mm.deserialize("<red>Du hast keine Berechtigung, andere Spieler zu füttern!</red>"));
+                player.sendMessage(mm.deserialize("<red>" + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "feed-other-permission") + "</red>"));
                 return true;
             }
             if (args[0].equalsIgnoreCase("all")) {
                 for (Player p : player.getServer().getOnlinePlayers()) {
                     p.setFoodLevel(20);
                     p.setSaturation(20);
-                    p.sendMessage(mm.deserialize("<green>Du wurdest gefüttert!</green>"));
+                    p.sendMessage(mm.deserialize("<green>" + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "feed-other-success") + "</green>"));
                 }
                 return true;
             }
@@ -44,8 +48,9 @@ public class FeedCommand implements CommandExecutor {
             if (target != null) {
                 target.setFoodLevel(20);
                 target.setSaturation(20);
-                target.sendMessage(mm.deserialize("<green>Du wurdest gefüttert!</green>"));
-                player.sendMessage(mm.deserialize("<green>Du hast <yellow>" + target.getName() + "</yellow> gefüttert!</green>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(target.getUniqueId(), "feed-self-success", FormatService.MessageType.SYSTEM));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(target.getUniqueId(), "feed-other-success", FormatService.MessageType.SYSTEM, Map.of("0", player.getName())));
+
             } else {
                 player.sendMessage(mm.deserialize("<red>Der Spieler ist nicht online!</red>"));
             }
