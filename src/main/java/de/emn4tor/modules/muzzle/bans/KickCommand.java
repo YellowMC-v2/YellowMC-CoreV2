@@ -6,12 +6,15 @@ package de.emn4tor.modules.muzzle.bans;
  */
 
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class KickCommand implements CommandExecutor {
     private final BanManager banManager;
@@ -35,7 +38,7 @@ public class KickCommand implements CommandExecutor {
             return true;
         }
         banManager.kickPlayer(playerName, reason, sender.getName());
-        sender.sendMessage(MiniMessage.miniMessage().deserialize("<green>Der Spieler " + playerName + " wurde für " + reason + " gekickt</green>"));
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-shop-purchase-success", FormatService.MessageType.SYSTEM, Map.of("0", playerName, "1", reason)));
         return true;
     }
 }

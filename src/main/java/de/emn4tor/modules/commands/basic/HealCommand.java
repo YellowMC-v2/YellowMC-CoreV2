@@ -5,6 +5,8 @@ package de.emn4tor.modules.commands.basic;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.utils.cooldown.CooldownManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
@@ -12,6 +14,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class HealCommand implements CommandExecutor {
     private final CooldownManager cooldownManager;
@@ -27,14 +31,14 @@ public class HealCommand implements CommandExecutor {
 
         if (args.length == 1) {
             if (!player.hasPermission("core.heal.others")) {
-                player.sendMessage(mm.deserialize("<red>Du hast keine Berechtigung, andere Spieler zu heilen!</red>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "heal-other-permission", FormatService.MessageType.ERROR));
                 return true;
             }
             if (args[0].equalsIgnoreCase("all")) {
                 for (Player p : player.getServer().getOnlinePlayers()) {
                     p.setHealth(20);
                     p.setFoodLevel(20);
-                    p.sendMessage(mm.deserialize("<green>Du wurdest geheilt!</green>"));
+                    p.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "heal-self", FormatService.MessageType.SYSTEM));
                 }
                 return true;
             }
@@ -43,20 +47,21 @@ public class HealCommand implements CommandExecutor {
             if (target != null) {
                 target.setHealth(20);
                 target.setFoodLevel(20);
-                target.sendMessage(mm.deserialize("<green>Du wurdest geheilt!</green>"));
-                player.sendMessage(mm.deserialize("<green>Du hast <yellow>" + target.getName() + "</yellow> geheilt!</green>"));            } else {
-                player.sendMessage(mm.deserialize("<red>Der Spieler ist nicht online!</red>"));
+                target.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "heal-self", FormatService.MessageType.SYSTEM));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "heal-other", FormatService.MessageType.SYSTEM, Map.of("0", target.getName())));
+            } else {
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             }
             return true;
         }
         if (cooldownManager.hasCooldown(player.getUniqueId().toString(), "heal")) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Du kannst aktuell nicht geheilt werden, warte noch <yellow>" + cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "heal") + "<red>!"));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "heal-cooldown", FormatService.MessageType.ERROR, Map.of("0", cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "heal"))));
             return true;
         }
 
         player.setHealth(20);
         player.setFoodLevel(20);
-        player.sendMessage(mm.deserialize("<green>Du wurdest geheilt!</green>"));
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "heal-self", FormatService.MessageType.SYSTEM));
         cooldownManager.setCooldown(player.getUniqueId().toString(), "heal", 40 * 60 * 1000); // 40 minutes cooldown
         return true;
     }

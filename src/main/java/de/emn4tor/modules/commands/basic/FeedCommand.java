@@ -52,17 +52,17 @@ public class FeedCommand implements CommandExecutor {
                 player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(target.getUniqueId(), "feed-other-success", FormatService.MessageType.SYSTEM, Map.of("0", player.getName())));
 
             } else {
-                player.sendMessage(mm.deserialize("<red>Der Spieler ist nicht online!</red>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             }
             return true;
         }
         if (cooldownManager.hasCooldown(player.getUniqueId().toString(), "feed")) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Du kannst aktuell nicht gefüttert werden, warte noch <yellow>" + cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "feed") + "<red>!"));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "feed-cooldown", FormatService.MessageType.ERROR, Map.of("0", cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "feed"))));
             return true;
         }
         player.setFoodLevel(20);
         player.setSaturation(20);
-        player.sendMessage(mm.deserialize("<green>Du wurdest gefüttert!</green>"));
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "feed-self-success", FormatService.MessageType.SYSTEM));
         cooldownManager.setCooldown(player.getUniqueId().toString(), "feed", 15 * 60 * 1000); // 15 minutes cooldown
         return true;
     }

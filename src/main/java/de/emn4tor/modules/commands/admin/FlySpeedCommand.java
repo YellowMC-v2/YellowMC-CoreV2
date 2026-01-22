@@ -5,11 +5,15 @@ package de.emn4tor.modules.commands.admin;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class FlySpeedCommand implements CommandExecutor {
     @Override
@@ -19,7 +23,7 @@ public class FlySpeedCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            player.sendRichMessage("<red>Verwendung: /flyspeed <Geschwindigkeit>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "fly-speed-usage", FormatService.MessageType.SYSTEM));
             return true;
         }
 
@@ -27,18 +31,17 @@ public class FlySpeedCommand implements CommandExecutor {
         try {
             speed = Float.parseFloat(args[0]);
         } catch (NumberFormatException e) {
-            player.sendRichMessage("<red>Ungültige Zahl.");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-invalid-number", FormatService.MessageType.ERROR));
             return true;
         }
 
         if (speed < 0 || speed > 10) {
-            player.sendRichMessage("<red>Die Geschwindigkeit muss zwischen 0 und 10 liegen.");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-invalid-number", FormatService.MessageType.ERROR));
             return true;
         }
 
         player.setFlySpeed(speed / 10f);
-        player.sendRichMessage("<green>Fluggeschwindigkeit auf <bold>" + speed + "</bold> gesetzt.");
-
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "fly-speed-success", FormatService.MessageType.SYSTEM, Map.of("0", String.valueOf(speed))));
         return true;
     }
 }

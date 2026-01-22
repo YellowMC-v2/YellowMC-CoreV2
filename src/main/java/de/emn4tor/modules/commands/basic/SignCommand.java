@@ -5,6 +5,8 @@ package de.emn4tor.modules.commands.basic;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.utils.cooldown.CooldownManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SignCommand implements CommandExecutor {
     private final CooldownManager cooldownManager;
@@ -32,12 +35,12 @@ public class SignCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (args.length == 0) {
-            player.sendMessage("§cBitte gib einen Text an!");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "sign-empty", FormatService.MessageType.ERROR));
             return false;
         }
         if (player.hasPermission("core.sign")){
             if (cooldownManager.hasCooldown(player.getUniqueId().toString(), "sign")) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Du kannst aktuell keine Items signieren, warte noch <yellow>" + cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "sign") + "<red>!"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "sign-cooldown", FormatService.MessageType.ERROR, Map.of("0", cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "sign"))));
                 return true;
             }
             else{
@@ -56,11 +59,11 @@ public class SignCommand implements CommandExecutor {
         ItemMeta meta = item.getItemMeta();
         List<Component> lore = meta.lore();
         if (lore == null) lore = new ArrayList<>();
-        String prefix = "<dark_gray>Signiert von <yellow>" + player.getName() + " am </yellow><gray>" + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "</gray>: ";
+        String prefix = "<dark_gray>Signed by <yellow>" + player.getName() + " on </yellow><gray>" + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "</gray>: ";
         lore.add(MiniMessage.miniMessage().deserialize(prefix + text));
         meta.lore(lore);
         item.setItemMeta(meta);
         player.getInventory().setItemInMainHand(item);
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast das Item signiert!"));
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "sign-success", FormatService.MessageType.SYSTEM));
     }
 }

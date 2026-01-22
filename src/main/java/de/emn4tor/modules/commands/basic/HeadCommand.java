@@ -5,6 +5,8 @@ package de.emn4tor.modules.commands.basic;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.utils.cooldown.CooldownManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 public class HeadCommand implements CommandExecutor {
 
@@ -39,31 +42,28 @@ public class HeadCommand implements CommandExecutor {
 
         if (args.length == 0) {
             if (cooldownManager.hasCooldown(player.getUniqueId().toString(), "head")) {
-                player.sendMessage(mm.deserialize(
-                        "<red>Du kannst aktuell keine Köpfe abholen, warte noch" +
-                                " <yellow>" + cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "head") + "</yellow>!</red>"
-                ));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "head-self-cooldown", FormatService.MessageType.ERROR, Map.of("0", cooldownManager.getRemainingCooldownFormatted(player.getUniqueId().toString(), "head"))));
             } else {
                 player.getInventory().addItem(createHead(player));
-                player.sendMessage(mm.deserialize("<green>Du hast deinen Kopf erhalten!"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "head-self-success", FormatService.MessageType.SYSTEM));
                 cooldownManager.setCooldown(player.getUniqueId().toString(), "head", 24 * 60 * 60 * 3 * 1000); // 3 Tage Cooldown in Millisekunden
             }
             return true;
         }
 
         if (!player.hasPermission("core.head.other")) {
-            player.sendMessage(mm.deserialize("<red>Du hast keine Berechtigung, diesen Befehl zu verwenden!</red>"));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "head-other-permission", FormatService.MessageType.ERROR));
             return true;
         }
 
         Player target = player.getServer().getPlayer(args[0]);
         if (target == null) {
-            player.sendMessage(mm.deserialize("<red>Spieler nicht gefunden</red>"));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
         player.getInventory().addItem(createHead(target));
-        player.sendMessage(mm.deserialize("<green>Du hast den Kopf von <yellow>" + target.getName() + "</yellow> erhalten!"));
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "head-other-success", FormatService.MessageType.SYSTEM, Map.of("0", target.getName())));
         return true;
     }
 

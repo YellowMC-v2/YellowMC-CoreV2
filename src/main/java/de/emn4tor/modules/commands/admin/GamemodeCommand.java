@@ -5,6 +5,8 @@ package de.emn4tor.modules.commands.admin;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,30 +22,30 @@ public class GamemodeCommand implements CommandExecutor {
             GameMode gameMode = getGameMode(args[0]);
             if (gameMode != null) {
                 player.setGameMode(gameMode);
-                player.sendMessage("§aDein Spielmodus wurde auf §6" + gameMode.name() + " §agesetzt.");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "gamemode-self", FormatService.MessageType.SYSTEM));
                 return true;
             } else {
-                player.sendMessage("§cUngültiger Spielmodus. Verfügbare Modi: 0, 1, 2, 3, s, c, a, sp");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "gamemode-invalid-gamemode", FormatService.MessageType.ERROR));
                 return false;
             }
         } else if (args.length == 2) {
             if (!player.hasPermission("core.gamemode.others")) {
-                player.sendMessage("§cDu hast keine Berechtigung, den Spielmodus anderer Spieler zu ändern.");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "gamemode-permission", FormatService.MessageType.ERROR));
                 return false;
             }
             Player target = player.getServer().getPlayer(args[0]);
             if (target == null) {
-                player.sendMessage("§cDer Spieler ist nicht online.");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
                 return false;
             }
             GameMode gameMode = getGameMode(args[1]);
             if (gameMode != null) {
                 target.setGameMode(gameMode);
-                target.sendMessage("§aDein Spielmodus wurde auf §6" + gameMode.name() + " §agesetzt.");
-                player.sendMessage("§aDer Spielmodus von §6" + target.getName() + " §awurde auf §6" + gameMode.name() + " §agesetzt.");
+                target.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(target.getUniqueId(), "gamemode-self", FormatService.MessageType.SYSTEM));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "gamemode-other", FormatService.MessageType.SYSTEM));
                 return true;
             } else {
-                player.sendMessage("§cUngültiger Spielmodus. Verfügbare Modi: 0, 1, 2, 3, s, c, a, sp");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "gamemode-invalid-gamemode", FormatService.MessageType.ERROR));
                 return false;
             }
         }

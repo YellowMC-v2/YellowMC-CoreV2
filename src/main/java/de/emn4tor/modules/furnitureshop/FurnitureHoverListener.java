@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.nexomc.nexo.api.NexoFurniture;
 import com.nexomc.nexo.api.NexoItems;
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.modules.economy.rubies.RubyHandler;
 import fi.septicuss.tooltips.api.TooltipsAPI;
 import fi.septicuss.tooltips.managers.theme.Theme;
@@ -74,9 +75,9 @@ public class FurnitureHoverListener implements Listener {
         Integer price = FurnitureShopManager.getFurniturePriceMap().get(furnitureId);
         String itemName = PlainTextComponentSerializer.plainText().serialize(NexoItems.itemFromId(furnitureId).getItemName());
         if (price != null) {
-            TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>Price: <white>" + price + " {default/ruby}\n<#ffa500>(Click to buy {default/right-click}<#ffa500>)"));
+            TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>" + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "furniture-shop-price") + "<white>" + price + " {default/ruby}\n<#ffa500>(" + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "furniture-shop-click") + "{default/right-click}<#ffa500>)"));
         } else {
-            TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>Couldnt find a price \n<red>(Contact an admin)"));
+            TooltipsAPI.sendTooltip(player, TooltipsAPI.getTheme("default/three-line"), List.of(itemName + "\n<gray>" + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "furniture-shop-error-price") + "\n<red>" + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "furniture-shop-error-price-2")));
         }
         int taskId = Bukkit.getScheduler().runTaskLater(YellowMCCoreV2.getInstance(), () -> {
             if (NexoFurniture.findTargetFurniture(player) != null) {
@@ -98,7 +99,7 @@ public class FurnitureHoverListener implements Listener {
         Player player = event.getPlayer();
         if (NexoFurniture.findTargetFurniture(player) != null) {
             if (player.getInventory().firstEmpty() == -1) {
-                player.sendRichMessage("<red>Your inventory is full! Please free up some space before buying an item.");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-shop-error-inv", FormatService.MessageType.ERROR));
                 return;
             }
             ItemDisplay itemDisplay = NexoFurniture.findTargetFurniture(player);
@@ -106,14 +107,14 @@ public class FurnitureHoverListener implements Listener {
             Integer price = FurnitureShopManager.getFurniturePriceMap().get(id);
             if (price != null) {
                 if (RubyHandler.getRubiesAsync(player.getUniqueId()).join() < price) {
-                    player.sendRichMessage("<red>You don't have enough rubies to buy this item!");
+                    player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-shop-error-funds", FormatService.MessageType.ERROR));
                     return;
                 }
-                player.sendRichMessage("<green>You bought a " + PlainTextComponentSerializer.plainText().serialize(NexoItems.itemFromId(id).getItemName()) + " for <gold>" + price + " <glyph:ruby>");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-shop-purchase-success", FormatService.MessageType.SYSTEM, Map.of("0", PlainTextComponentSerializer.plainText().serialize(NexoItems.itemFromId(id).getItemName()), "1", String.valueOf(price))));
                 player.getInventory().addItem(NexoItems.itemFromId(id).build());
                 RubyHandler.removeRubies(player.getUniqueId(), price);
             } else {
-                player.sendRichMessage("<red>Could not find the price for this item. Please contact an admin.");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-shop-error-price-1", FormatService.MessageType.ERROR) + YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-shop-error-price-2", FormatService.MessageType.ERROR));
             }
         }
     }

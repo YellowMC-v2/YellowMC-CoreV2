@@ -5,12 +5,16 @@ package de.emn4tor.modules.economy.coins.commands;
  *  @created: 20.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.modules.economy.coins.api.EconomyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 public class BalanceCommand implements CommandExecutor {
 
@@ -26,31 +30,25 @@ public class BalanceCommand implements CommandExecutor {
             sender.sendRichMessage("<red>Console must specify a player name!");
             return true;
         }
+        Player player = (Player) sender;
 
         if (args.length == 0) {
-            Player player = (Player) sender;
             economyManager.getCoins(player.getUniqueId()).thenAccept(coins -> {
-                player.sendRichMessage("<green>Du hast <gold>" + coins + " <gray>coins");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "economy-balance-self", FormatService.MessageType.ERROR, Map.of("0", String.valueOf(coins))));
             });
         } else if (args.length == 1) {
-            if (!sender.hasPermission("economy.balance.others")) {
-                sender.sendRichMessage("<red>You don't have permission to check other players' balances!");
-                return true;
-            }
-
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                sender.sendRichMessage("<red>Player not found!");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online",FormatService.MessageType.ERROR));
                 return true;
             }
 
             economyManager.getCoins(target.getUniqueId()).thenAccept(coins -> {
-                sender.sendRichMessage("<yellow>" + target.getName() + "<green>'s balance: <gold>" + coins + " <gray>coins");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "economy-balance-other",FormatService.MessageType.SYSTEM , Map.of("1", String.valueOf(coins), "0", target.getName())));
             });
         } else {
-            sender.sendRichMessage("<red>Usage: /balance [player]");
+            sender.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "economy-balance-usage",FormatService.MessageType.SYSTEM));
         }
-
         return true;
     }
 }

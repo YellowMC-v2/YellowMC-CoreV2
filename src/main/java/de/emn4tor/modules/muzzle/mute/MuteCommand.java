@@ -6,9 +6,12 @@ package de.emn4tor.modules.muzzle.mute;
  */
 
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 public class MuteCommand implements CommandExecutor {
     private final MuteManager muteManager;
@@ -19,11 +22,12 @@ public class MuteCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
         if (args.length < 2) return false;
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage("§cPlayer not found.");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
@@ -31,7 +35,7 @@ public class MuteCommand implements CommandExecutor {
         long durationMillis = args.length >= 3 ? parseDuration(args[2]) : 0;
 
         muteManager.mute(target.getUniqueId(), reason, sender.getName(), durationMillis == 0 ? 0 : System.currentTimeMillis() + durationMillis);
-        sender.sendMessage("§aMuted " + target.getName() + " for: " + reason);
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "mute-success", FormatService.MessageType.SYSTEM, Map.of("0", target.getName(), "1", reason)));
         return true;
     }
 

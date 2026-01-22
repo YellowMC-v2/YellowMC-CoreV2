@@ -14,6 +14,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -155,7 +156,7 @@ public class FurnitureSpawner {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if(FurnitureHoverListener.isInShop(player)) {
                 player.teleport(new Location(Bukkit.getWorld(worldName), -71, 63, -119, 90, 0));
-                player.sendRichMessage("<yellow>You have been moved out of the furniture shop, we are rearranging things!");
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-refresh-notification", FormatService.MessageType.SYSTEM));
             }
         }
     }
