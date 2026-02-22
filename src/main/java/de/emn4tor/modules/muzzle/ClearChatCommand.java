@@ -27,7 +27,7 @@ public class ClearChatCommand implements CommandExecutor {
         for (int i = 0; i < 100; i++) {
             chatManager.sendMessage(" ");
         }
-        chatManager.sendMessage("[<yellow>MaulKorb</yellow>] <blue>Der Chat wurde von " + sender.getName() + " geleert!</blue>");
+        chatManager.sendMessage("<yellow>Chat cleared by" + sender.getName() + "<hover:show_text:'Messages visible to everyone are harder to translate, that is why we did not translate this message'>(Why no translation?)</hover>");
         return true;
     }
 }

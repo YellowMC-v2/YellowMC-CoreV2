@@ -251,6 +251,13 @@ commands:
       - Nether
 
 
+  language:
+    description: Change your language
+    aliases:
+      - lang
+      - sprache
+
+
 permissions:
   playtime.use:
     description: Allows players to check their own playtime

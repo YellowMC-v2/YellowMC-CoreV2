@@ -58,10 +58,10 @@ public class ScoreboardManager implements Listener {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
                 createLine(board, obj, 6, " ");
-                createLine(board, obj, 5, "<#FFD700>\uD83D\uDC64 <reset>Profil: <#FFD700>" + player.getName());
-                createLine(board, obj, 4, "<#FCE300>⌚ <reset>Playtime: <#FCE300>" + formatHours(playtime));
-                createLine(board, obj, 3, "<#00FC00><b>⛃ <reset>Coins: <#00FC00>" + formatBalance(balance));
-                createLine(board, obj, 2, "<#FC0800>\uD83D\uDC8E <reset>Rubine: <#FC0800>" + formatRubies(rubies));
+                createLine(board, obj, 5, "<#FFD700>👤 " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-profile") + ": <#FFD700>" + player.getName());
+                createLine(board, obj, 4, "<#FCE300>⌚ " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-playtime") + ": <#FCE300>" + formatHours(playtime));
+                createLine(board, obj, 3, "<#00FC00>⛃ " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-coins") + ": <#00FC00>" + formatBalance(balance));
+                createLine(board, obj, 2, "<#FC0800>💎 " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-rubies") + ": <#FC0800>" + formatRubies(rubies));
                 createLine(board, obj, 1, " ");
 
                 // === Apply Nametag Prefix ===
@@ -97,9 +97,9 @@ public class ScoreboardManager implements Listener {
                 Scoreboard board = player.getScoreboard();
                 if (board == null || board.getObjective("stats") == null) return;
 
-                updateLine(board, 4, "<#FCE300>⌚ <reset>Playtime: <#FCE300>" + formatHours(playtime));
-                updateLine(board, 3, "<#00FC00><b>⛃ <reset>Coins: <#00FC00>" + formatBalance(balance));
-                updateLine(board, 2, "<#FC0800>\uD83D\uDC8E <reset>Rubine: <#FC0800>" + formatRubies(rubies));
+                updateLine(board, 4, "<#FCE300>⌚ " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-playtime") + ": <#FCE300>" + formatHours(playtime));
+                updateLine(board, 3, "<#00FC00>⛃ " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-coins") + ": <#00FC00>" + formatBalance(balance));
+                updateLine(board, 2, "<#FC0800>💎 " + YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "scoreboard-rubies") + ": <#FC0800>" + formatRubies(rubies));
 
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     Team tagTeam = board.getTeam("tag_" + onlinePlayer.getName());

@@ -6,12 +6,14 @@ package de.emn4tor.modules.muzzle.mute;
  */
 
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class CheckMuteCommand implements CommandExecutor {
@@ -24,26 +26,27 @@ public class CheckMuteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length != 1) return false;
-
+        Player player = (Player) sender;
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage("§cPlayer not found.");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
         UUID uuid = target.getUniqueId();
         if (!muteManager.isMuted(uuid)) {
-            sender.sendMessage("§a" + target.getName() + " is not muted.");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "mute-not-found", FormatService.MessageType.ERROR, Map.of("0", target.getName())));
             return true;
         }
 
         long expiresAt = muteManager.getExpiresAt(uuid);
         if (expiresAt == 0) {
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "mute-permanent", FormatService.MessageType.ERROR, Map.of("0", target.getName())));
             sender.sendMessage("§e" + target.getName() + " is permanently muted.");
         } else {
             long remainingMs = expiresAt - System.currentTimeMillis();
             if (remainingMs < 0) remainingMs = 0;
-            sender.sendMessage("§e" + target.getName() + " is muted for another " + formatDuration(remainingMs) + ".");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "mute-temporary", FormatService.MessageType.ERROR, Map.of("0", target.getName(), "1", formatDuration(remainingMs))));
         }
         return true;
     }

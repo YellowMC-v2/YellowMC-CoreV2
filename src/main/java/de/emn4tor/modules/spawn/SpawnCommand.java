@@ -6,6 +6,7 @@ package de.emn4tor.modules.spawn;
  */
 
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -42,7 +43,7 @@ public class SpawnCommand implements CommandExecutor, Listener {
             if (sender instanceof Player) {
                 Location loc = player.getLocation();
                 saveSpawn(loc);
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Spawn gesetzt!"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "spawn-set-success", FormatService.MessageType.SYSTEM));
             } else {
                 sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>Dieser Befehl kann nur von einem Spieler ausgeführt werden!"));
             }

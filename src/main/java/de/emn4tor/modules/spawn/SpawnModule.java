@@ -23,6 +23,7 @@ public class SpawnModule implements Module {
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
         plugin.getCommand("spawn").setExecutor(new SpawnCommand(plugin));
+        plugin.getServer().getPluginManager().registerEvents(new SpawnListener(), plugin);
     }
 
     @Override

@@ -3,6 +3,7 @@ package de.emn4tor;
 import de.emn4tor.api.LocaleService;
 import de.emn4tor.api.MessageService;
 import de.emn4tor.api.TranslationService;
+import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
@@ -79,6 +80,7 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
         moduleManager.enableModules(this);
 
+        Bukkit.getServer().getPluginManager().registerEvents(new JoinListener(), this);
     }
 
     @Override
