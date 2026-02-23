@@ -26,15 +26,12 @@ import de.emn4tor.utils.cooldown.CooldownManager;
 @ModuleInfo(name = "CommandsModule")
 public class CommandsModule implements Module {
     private CooldownManager cooldownManager;
-    private ChatManager chatManager;
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
-        chatManager = new ChatManager();
         cooldownManager = new CooldownManager(YellowMCCoreV2.getRedisManager());
         LanguageCommand languageCommand = new LanguageCommand();
         //Admin Commands
-        plugin.getCommand("boughtrank").setExecutor(new BoughtRankCommand(chatManager));
         plugin.getCommand("gamemode").setExecutor(new GamemodeCommand());
         plugin.getCommand("flyspeed").setExecutor(new FlySpeedCommand());
         //basic commands

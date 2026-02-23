@@ -69,20 +69,6 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         moduleManager.discoverModules();
         moduleManager.enableModules(this);
 
-        //moduleManager.registerModule(new TestModule());
-        moduleManager.registerModule(new PlaytimeModule());
-        moduleManager.registerModule(new EconomyModule());
-        //moduleManager.registerModule(new StarterItemsModule());
-        moduleManager.registerModule(new CommandsModule());
-        moduleManager.registerModule(new MuzzleModule());
-        moduleManager.registerModule(new ScoreboardModule());
-        moduleManager.registerModule(new RedeemableModule());
-        moduleManager.registerModule(new ShopsModule());
-        moduleManager.registerModule(new FurnitureShopModule());
-        moduleManager.registerModule(new SpawnModule());
-
-        moduleManager.enableModules(this);
-
         Bukkit.getServer().getPluginManager().registerEvents(new JoinListener(), this);
     }
 

@@ -258,6 +258,17 @@ commands:
       - sprache
 
 
+  buildmode:
+    description: Toggle build mode
+    permission: lobby.buildmode
+    usage: /buildmode
+    aliases: [build]
+
+  quickmenu:
+    description: Open the quick menu
+    aliases: [qm]
+
+
 permissions:
   playtime.use:
     description: Allows players to check their own playtime
