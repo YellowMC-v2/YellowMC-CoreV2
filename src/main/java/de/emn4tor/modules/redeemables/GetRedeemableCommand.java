@@ -5,6 +5,8 @@ package de.emn4tor.modules.redeemables;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -48,14 +50,14 @@ public class GetRedeemableCommand implements CommandExecutor {
                 String amount = args.length > 1 ? args[1] : "1";
                 itemMeta.displayName(MiniMessage.miniMessage().deserialize("ꑺ<red> " + amount + "</red>"));
                 itemMeta.lore(new ArrayList<>() {{
-                    add(MiniMessage.miniMessage().deserialize("<gray>Ein Gutschein für " + amount + " Rubine"));
-                    add(MiniMessage.miniMessage().deserialize("<gray>Rechtsklick um einzulösen</gray>"));
+                    add(MiniMessage.miniMessage().deserialize("<gray>Vouch for " + amount + " Rubies"));
+                    add(MiniMessage.miniMessage().deserialize("<gray>Right click to use</gray>"));
                 }});
                 itemMeta.getPersistentDataContainer().set(key, org.bukkit.persistence.PersistentDataType.INTEGER, Integer.parseInt(amount));
                 itemStack.setItemMeta(itemMeta);
                 giveItem(player, itemStack, args);
             } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Unbekannter Befehl. Nutze /reedemable <yellow><coins|rubies></yellow> <amount> [<player>]</red>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "redeemable-usabe", FormatService.MessageType.ERROR));
             }
 
         }
@@ -67,14 +69,14 @@ public class GetRedeemableCommand implements CommandExecutor {
             Player target = player.getServer().getPlayer(args[2]);
             if (target != null && target.isOnline()) {
                 target.getInventory().addItem(itemStack);
-                target.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast einen Gutschein erhalten"));
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast " + target.getName() + " einen Gutschein gegeben: " + itemStack.getItemMeta().displayName() + "</green>"));
+                target.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(target.getUniqueId(), "redeemable-receive-self", FormatService.MessageType.SYSTEM));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "redeemable-give-success", FormatService.MessageType.SYSTEM));
             } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Spieler nicht gefunden oder offline.</red>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             }
         } else {
             player.getInventory().addItem(itemStack);
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Du hast einen Gutschein erhalten:"));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "redeemable-receive-self", FormatService.MessageType.SYSTEM));
         }
     }
 }

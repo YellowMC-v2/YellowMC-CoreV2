@@ -14,11 +14,32 @@ import org.bukkit.plugin.java.JavaPlugin;
 public interface Module {
 
     /**
-     * Returns the name of the module.
+     * Retrieves the name of the module defined in the @ModuleInfo annotation.
+     * If the annotation is missing, it falls back to the class name.
      *
-     * @return module name
+     * @return the module name from metadata, or class name as fallback.
      */
-    String getName();
+    default String getName() {
+        if (this.getClass().isAnnotationPresent(ModuleInfo.class)) {
+            return this.getClass().getAnnotation(ModuleInfo.class).name();
+        }
+        return this.getClass().getSimpleName();
+    }
+
+    /**
+     * Retrieves the required server name for this module from @ModuleInfo metadata.
+     * If no server is specified or the annotation is missing, the module is
+     * considered universal.
+     *
+     * @return the required server name, or null if it should run on all servers.
+     */
+    default String getServerName() {
+        if (this.getClass().isAnnotationPresent(ModuleInfo.class)) {
+            String server = this.getClass().getAnnotation(ModuleInfo.class).server();
+            return server.isEmpty() ? null : server;
+        }
+        return null;
+    }
 
     /**
      * Called when the module is enabled.
@@ -35,4 +56,5 @@ public interface Module {
      * @param plugin the main plugin instance
      */
     void onDisable(YellowMCCoreV2 plugin);
+
 }

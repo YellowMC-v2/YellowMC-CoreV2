@@ -5,6 +5,8 @@ package de.emn4tor.commons;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.modules.commands.languagesel.LanguageCommand;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,6 +25,9 @@ public class JoinListener implements Listener {
         int joinTime = (int) System.currentTimeMillis();
         event.setJoinMessage(null);
         Bukkit.getServer().broadcast(MiniMessage.miniMessage().deserialize("<gray>[<green>+<gray>] <white>" + player.getName()));
+        if (YellowMCCoreV2.getLocaleService().getLocaleNoFallBack(player.getUniqueId()) == null) {
+            LanguageCommand.openLangGUI(player, 0);
+        }
     }
 
     @EventHandler

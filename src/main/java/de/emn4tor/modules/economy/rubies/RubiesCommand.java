@@ -5,11 +5,15 @@ package de.emn4tor.modules.economy.rubies;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class RubiesCommand implements CommandExecutor {
 
@@ -26,7 +30,7 @@ public class RubiesCommand implements CommandExecutor {
 
     private void showOwnRubies(Player player) {
         RubyHandler.getRubiesAsync(player.getUniqueId()).thenAccept(rubies ->
-                player.sendRichMessage("<yellow>Du hast <green>" + rubies + " <yellow>Rubine.")
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "ruby-balance-self", FormatService.MessageType.SYSTEM, Map.of("0", String.valueOf(rubies))))
         );
     }
 }

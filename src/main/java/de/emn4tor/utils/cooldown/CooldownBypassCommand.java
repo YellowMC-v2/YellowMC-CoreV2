@@ -5,6 +5,8 @@ package de.emn4tor.utils.cooldown;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.data.RedisManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,7 +42,7 @@ public class CooldownBypassCommand implements CommandExecutor {
                     "true",
                     60 * 5 // 5 minutes in seconds
             );
-            sender.sendMessage("§aCooldown-Bypass für " + target.getName() + " gesetzt.");
+            target.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(target.getUniqueId(), "cooldown-bypass-enabled", FormatService.MessageType.SYSTEM));
         } else {
             sender.sendMessage("§cUsage: /cooldownbypass [spieler]");
             return true;

@@ -5,6 +5,8 @@ package de.emn4tor.modules.daily;
  *  @created: 12.06.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.data.SQLManager;
 import de.emn4tor.modules.daily.enums.RankType;
 import de.emn4tor.modules.economy.coins.api.EconomyHandler;
@@ -16,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -36,14 +39,13 @@ public class DailyManager {
         EconomyHandler.addCoins(player, coins);
         RubyHandler.addRubies(player.getUniqueId(), rubies);
 
+
         player.sendRichMessage(
-                "<#32CD32>🎁 Tägliche Belohnung eingesackt!</#32CD32>\n" +
+                YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "daily-join-msg-title") +
                         "        <red>" + rubies + " 💎 <gray>| <gold>" + coins + " 🪙 <gray>| <color:#ff2200>" + streak + "🔥 Streak"
         );
 
-        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                "<green><bold>+ Belohnung erhalten! 🔥 Streak: " + streak + " Tage</bold></green>"
-        ));
+        player.sendActionBar(MiniMessage.miniMessage().deserialize(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "daily-join-msg-actionbar", FormatService.MessageType.SYSTEM, Map.of("0", String.valueOf(streak)))));
     }
 
     public int updateStreak(Player player) {

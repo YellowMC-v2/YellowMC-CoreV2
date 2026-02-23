@@ -5,6 +5,9 @@ package de.emn4tor.modules.economy.coins.api;
  *  @created: 20.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
+import de.emn4tor.api.MessageService;
 import de.emn4tor.data.RedisManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.json.JSONObject;
 import redis.clients.jedis.JedisPubSub;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class PayManager {
@@ -42,8 +46,7 @@ public class PayManager {
                     if (recipient.isOnline()) {
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             Player online = (Player) recipient;
-                            online.sendRichMessage("<green>You received <yellow> "+ amount +
-                                    " coins <green> from <yellow>"+ fromName);
+                            online.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(online.getUniqueId(), "economy-pay-receive", FormatService.MessageType.SYSTEM, Map.of("0", String.valueOf(amount), "1", fromName)));
                         });
                     }
 

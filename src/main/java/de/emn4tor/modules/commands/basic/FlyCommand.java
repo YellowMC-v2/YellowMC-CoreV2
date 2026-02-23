@@ -5,12 +5,16 @@ package de.emn4tor.modules.commands.basic;
  *  @created: 21.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class FlyCommand implements CommandExecutor {
     @Override
@@ -21,13 +25,13 @@ public class FlyCommand implements CommandExecutor {
         } else if (args.length == 1){
             Player target = player.getServer().getPlayer(args[0]);
             if (target == null) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Spieler nicht gefunden</red>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
                 return true;
             }
             toggleFly(target);
         }
         else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Nutze: /fly [spieler]</red>"));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "fly-usage", FormatService.MessageType.SYSTEM));
             return true;
         }
         return false;
@@ -37,10 +41,7 @@ public class FlyCommand implements CommandExecutor {
     private void toggleFly(Player player) {
         boolean flying = !player.getAllowFlight();
         player.setAllowFlight(flying);
-
-        player.sendMessage(MiniMessage.miniMessage().deserialize(
-                "<yellow>Flugmodus " + (flying ? "<green>aktiviert" : "<red>deaktiviert") + "</yellow>"
-        ));
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "fly-self-enabled", FormatService.MessageType.SYSTEM, Map.of("0", flying ? "true" : "false")));
 
         if (!flying) {
             player.setFlying(false);

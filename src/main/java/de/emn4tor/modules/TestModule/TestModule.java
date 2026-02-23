@@ -6,18 +6,15 @@ package de.emn4tor.modules.TestModule;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+@ModuleInfo(name = "TestModule")
 public class TestModule implements Module, CommandExecutor {
-
-    @Override
-    public String getName() {
-        return "CommandsModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

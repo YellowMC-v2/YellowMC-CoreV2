@@ -5,6 +5,7 @@ package de.emn4tor.modules.economy;
  *  @created: 20.08.2025
  */
 
+import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.economy.coins.api.EconomyManager;
 import de.emn4tor.modules.economy.rubies.RubyHandler;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -31,6 +32,7 @@ public class AdminCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Player player = (Player) sender;
         if (!sender.hasPermission("economy.admin")) {
             sender.sendMessage(mm.deserialize("<red>You don't have permission to use this command!"));
             return true;
@@ -48,12 +50,12 @@ public class AdminCommand implements CommandExecutor, TabCompleter {
         try {
             amount = Integer.parseInt(args[3]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(mm.deserialize("<red>Amount must be a number!"));
+            player.sendRichMessage(YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "economy-error-nan"));
             return true;
         }
 
         if (amount < 0 && !action.equals("take")) {
-            sender.sendMessage(mm.deserialize("<red>Amount must be positive!"));
+            player.sendRichMessage(YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "economy-error-positive-amount"));
             return true;
         }
 
@@ -61,7 +63,7 @@ public class AdminCommand implements CommandExecutor, TabCompleter {
             case "coins" -> {
                 Player target = Bukkit.getPlayer(args[2]);
                 if (target == null) {
-                    sender.sendMessage(mm.deserialize("<red>Player must be online for coin actions!"));
+                    player.sendRichMessage(YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "error-target-not-online"));
                     return true;
                 }
                 handleCoins(sender, target, action, amount);

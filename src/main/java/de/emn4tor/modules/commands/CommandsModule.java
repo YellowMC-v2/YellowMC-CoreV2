@@ -6,11 +6,15 @@ package de.emn4tor.modules.commands;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.commands.admin.BoughtRankCommand;
 import de.emn4tor.modules.commands.admin.FlySpeedCommand;
 import de.emn4tor.modules.commands.admin.GamemodeCommand;
 import de.emn4tor.modules.commands.basic.*;
+import de.emn4tor.modules.commands.languagesel.InvCloseListener;
+import de.emn4tor.modules.commands.languagesel.LanguageCommand;
+import de.emn4tor.modules.commands.languagesel.LanguageInventoryListener;
 import de.emn4tor.modules.commands.social.DiscordCommand;
 import de.emn4tor.modules.commands.social.InstagramCommand;
 import de.emn4tor.modules.commands.social.TikTokCommand;
@@ -19,18 +23,16 @@ import de.emn4tor.modules.commands.workstations.*;
 import de.emn4tor.modules.muzzle.ChatManager;
 import de.emn4tor.utils.cooldown.CooldownManager;
 
+@ModuleInfo(name = "CommandsModule")
 public class CommandsModule implements Module {
     private CooldownManager cooldownManager;
     private ChatManager chatManager;
-    @Override
-    public String getName() {
-        return "CommandsModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
         chatManager = new ChatManager();
         cooldownManager = new CooldownManager(YellowMCCoreV2.getRedisManager());
+        LanguageCommand languageCommand = new LanguageCommand();
         //Admin Commands
         plugin.getCommand("boughtrank").setExecutor(new BoughtRankCommand(chatManager));
         plugin.getCommand("gamemode").setExecutor(new GamemodeCommand());
@@ -54,6 +56,11 @@ public class CommandsModule implements Module {
         plugin.getCommand("loom").setExecutor(new LoomCommand());
         plugin.getCommand("smithingtable").setExecutor(new SmithingTableCommand());
         plugin.getCommand("stonecutter").setExecutor(new StoneCutterCommand());
+
+        plugin.getCommand("language").setExecutor(languageCommand);
+
+        plugin.getServer().getPluginManager().registerEvents(new LanguageInventoryListener(languageCommand), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new InvCloseListener(), plugin);
     }
 
     @Override

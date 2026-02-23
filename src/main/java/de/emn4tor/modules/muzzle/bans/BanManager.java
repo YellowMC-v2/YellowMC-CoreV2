@@ -67,16 +67,16 @@ public class BanManager {
     }
 
     private String formatKickMessage(String reason, String admin) {
-        return "<gradient:#FFEF0F:#FF8600>YellowMC</gradient><br><br><gray>Du wurdest gekickt!<br><br><color:#ffc800>Grund:</color> <white>"
-                + reason + "<br><br><color:#ffc800>Von:</color> " + admin
+        return "<gradient:#FFEF0F:#FF8600>YellowMC</gradient><br><br><gray>You got kicked!<br><br><color:#ffc800>Reason:</color> <white>"
+                + reason + "<br><br><color:#ffc800>Admin:</color> " + admin
                 + "<br><br><click:open_url:'https://yellowmc.de/discord'><gray>https://yellowmc.de/discord</click>";
     }
 
     private String formatBanMessage(String reason, String admin, String duration) {
-        return "<gradient:#FFEF0F:#FF8600>YellowMC</gradient><br><br><gray>Du wurdest für <color:#ffed9e>"
-                + duration + "</color> gebannt!<br><br><color:#ffc800>Grund:</color> <white>"
-                + (reason != null ? reason : "Kein Grund angegeben")
-                + "<br><br><color:#ffc800>Von:</color> "
+        return "<gradient:#FFEF0F:#FF8600>YellowMC</gradient><br><br><gray>You are banned for<color:#ffed9e>"
+                + duration + "</color><br><br><color:#ffc800>Reason:</color> <white>"
+                + (reason != null ? reason : "No Reason specified.")
+                + "<br><br><color:#ffc800>Admin:</color> "
                 + (admin != null ? admin : "System")
                 + "<br><br><click:open_url:'https://yellowmc.de/discord'><gray>https://yellowmc.de/discord</click>";
     }

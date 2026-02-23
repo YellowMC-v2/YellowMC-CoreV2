@@ -6,18 +6,15 @@ package de.emn4tor.modules.playtime;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.data.SQLManager;
 
+@ModuleInfo(name = "PlaytimeModule")
 public class PlaytimeModule implements Module {
     private PlaytimeManager playTimeManager;
     private PlaytimeCommand commandHandler;
     private PlaytimeConnectionListener connectionListener;
-
-    @Override
-    public String getName() {
-        return "PlaytimeModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

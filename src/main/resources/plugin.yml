@@ -3,11 +3,20 @@ version: '1.0.0'
 main: de.emn4tor.YellowMCCoreV2
 api-version: '1.21'
 authors: [ Emn4tor ]
+depend:
+  - YellowMC-API
 
 commands:
   hello:
     description: A simple hello command
 
+
+  debugfurniture:
+    description: Debug furniture command
+    usage: /debugfurniture
+    permission: core.debugfurniture
+  furnitureshop:
+    permission: core.furnitureshop
 
 
   playtime:
@@ -240,6 +249,13 @@ commands:
     usage: /nether
     aliases:
       - Nether
+
+
+  language:
+    description: Change your language
+    aliases:
+      - lang
+      - sprache
 
 
 permissions:

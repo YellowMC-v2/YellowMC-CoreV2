@@ -6,6 +6,8 @@ package de.emn4tor.modules.muzzle;
  */
 
 
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.modules.muzzle.mute.MuteManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -17,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static de.emn4tor.modules.muzzle.MuzzleModule.bannedWords;
@@ -43,22 +46,16 @@ public class ChatListener implements Listener {
         String prefix = user.getCachedData().getMetaData().getPrefix();
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());
         if (muteManager.isMuted(player.getUniqueId())) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "[<yellow>MaulKorb</yellow>] <gray>Du bist für <red>"
-                            + muteManager.getRemainingTime(player.getUniqueId())
-                            + "</red> <gray>stummgeschaltet! Grund: <dark_red>"
-                            + muteManager.getReason(event.getPlayer().getUniqueId())
-                            + "</dark_red></gray>"
-            ));
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "mute-message", FormatService.MessageType.WARNING, Map.of("0", muteManager.getRemainingTime(player.getUniqueId()), "1", muteManager.getReason(event.getPlayer().getUniqueId()))));
             return;
         }
         if (containsBannedWord(message)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("[<yellow>MaulKorb</yellow>] <red>Bitte benutze keine Schimpfwörter!")); //TODO: Mute player?
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "chat-bad-word", FormatService.MessageType.WARNING));
             return;
         }
         if (!player.hasPermission("core.chat.color")) {
             if (message.contains("<") && message.contains(">")) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Tipp:</yellow> <gray>Du kannst keine Farben im Chat verwenden, dies ist ab dem <#c0c0c0>Silber Rang<gray>, oder mit der <rainbow>Farbig schreiben</rainbow> Belohnung aus den Crates möglich.</gray>"));
+                player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "chat-nocolor", FormatService.MessageType.INFO));
             }
             message = message.replaceAll("<[^>]*>", "");
         }
