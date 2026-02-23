@@ -1,5 +1,10 @@
 package de.emn4tor.modules.muzzle;
 
+/*
+ *  @author: Emn4tor
+ *  @created: 02.05.2025
+ */
+
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.data.RedisManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -9,13 +14,11 @@ import redis.clients.jedis.JedisPubSub;
 
 public class ChatManager {
     private final RedisManager redis = RedisManager.getInstance();
-    private JedisPubSub activePubSub; // Reference to stop the listener
 
     public ChatManager() {
-        this.activePubSub = new JedisPubSub() {
+        redis.subscribe("chat", new JedisPubSub() {
             @Override
             public void onMessage(String channel, String message) {
-                // Return to main thread for Bukkit API calls
                 Bukkit.getScheduler().runTask(YellowMCCoreV2.getInstance(), () -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (player.hasPermission("core.chat.debug")) {
@@ -30,10 +33,7 @@ public class ChatManager {
                     }
                 });
             }
-        };
-
-        // Start the subscriber
-        redis.subscribe("chat", activePubSub);
+        });
     }
 
     public void sendMessage(String msg) {
@@ -41,8 +41,6 @@ public class ChatManager {
     }
 
     public void shutdown() {
-        if (activePubSub != null && activePubSub.isSubscribed()) {
-            activePubSub.unsubscribe();
-        }
+        redis.close();
     }
 }
