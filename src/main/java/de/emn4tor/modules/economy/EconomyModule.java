@@ -6,6 +6,7 @@ package de.emn4tor.modules.economy;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.economy.coins.api.EconomyManager;
 import de.emn4tor.modules.economy.coins.commands.BalanceCommand;
@@ -13,13 +14,9 @@ import de.emn4tor.modules.economy.coins.commands.PayCommand;
 import de.emn4tor.modules.economy.rubies.RubiesCommand;
 import de.emn4tor.modules.economy.rubies.RubyHandler;
 
+@ModuleInfo(name = "EconomyModule", priority = 1)
 public class EconomyModule implements Module {
     private static EconomyManager economyManager;
-
-    @Override
-    public String getName() {
-        return "EconomyModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

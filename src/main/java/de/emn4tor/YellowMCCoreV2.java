@@ -66,10 +66,13 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         //Register modules
         moduleManager = new ModuleManager();
 
-        moduleManager.registerModule(new TestModule());
+        moduleManager.discoverModules();
+        moduleManager.enableModules(this);
+
+        //moduleManager.registerModule(new TestModule());
         moduleManager.registerModule(new PlaytimeModule());
         moduleManager.registerModule(new EconomyModule());
-        moduleManager.registerModule(new StarterItemsModule());
+        //moduleManager.registerModule(new StarterItemsModule());
         moduleManager.registerModule(new CommandsModule());
         moduleManager.registerModule(new MuzzleModule());
         moduleManager.registerModule(new ScoreboardModule());

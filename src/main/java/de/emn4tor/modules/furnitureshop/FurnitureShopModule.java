@@ -1,22 +1,15 @@
 package de.emn4tor.modules.furnitureshop;
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import org.bukkit.Bukkit;
 
-public class FurnitureShopModule implements Module {
-    @Override
-    public String getServerName() {
-        return "lobby";
-    }
 
+@ModuleInfo(name = "FurnitureShopModule", server = "lobby")
+public class FurnitureShopModule implements Module {
     private static FurnitureShopModule instance;
     private FurnitureSpawner furnitureSpawner;
-
-    @Override
-    public String getName() {
-        return "FurnitureShopModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

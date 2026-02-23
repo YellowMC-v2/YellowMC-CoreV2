@@ -6,13 +6,11 @@ package de.emn4tor.modules.redeemables;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 
+@ModuleInfo(name = "RedeemablesModule")
 public class RedeemableModule implements Module {
-    @Override
-    public String getName() {
-        return "RedeemablesModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

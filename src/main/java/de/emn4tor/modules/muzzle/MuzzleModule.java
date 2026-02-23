@@ -6,6 +6,7 @@ package de.emn4tor.modules.muzzle;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.muzzle.bans.BanCommand;
 import de.emn4tor.modules.muzzle.bans.BanManager;
@@ -23,16 +24,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+@ModuleInfo(name = "MuzzleModule (Chat & Bansystem)")
 public class MuzzleModule implements Module {
     public static final Set<String> bannedWords = new HashSet<>();
     private ChatManager chatManager;
     private BanManager banManager;
-
-
-    @Override
-    public String getName() {
-        return "MuzzleModule (Chat & Bansystem)";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

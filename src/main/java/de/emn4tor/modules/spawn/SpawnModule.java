@@ -6,19 +6,12 @@ package de.emn4tor.modules.spawn;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 
+@ModuleInfo(name="SpawnModule", server = "lobby", priority = 10)
 public class SpawnModule implements Module {
-    @Override
-    public String getName() {
-        return "SpawnModule";
-    }
 
-
-    @Override
-    public String getServerName() {
-        return "spawn";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

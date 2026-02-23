@@ -6,6 +6,7 @@ package de.emn4tor.modules.commands;
  */
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.commands.admin.BoughtRankCommand;
 import de.emn4tor.modules.commands.admin.FlySpeedCommand;
@@ -22,13 +23,10 @@ import de.emn4tor.modules.commands.workstations.*;
 import de.emn4tor.modules.muzzle.ChatManager;
 import de.emn4tor.utils.cooldown.CooldownManager;
 
+@ModuleInfo(name = "CommandsModule")
 public class CommandsModule implements Module {
     private CooldownManager cooldownManager;
     private ChatManager chatManager;
-    @Override
-    public String getName() {
-        return "CommandsModule";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {

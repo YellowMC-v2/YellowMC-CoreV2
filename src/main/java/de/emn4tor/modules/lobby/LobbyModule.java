@@ -1,6 +1,7 @@
 package de.emn4tor.modules.lobby;
 
 import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.commons.ServerConnector;
 import de.emn4tor.modules.lobby.commands.QuickMenu;
@@ -10,18 +11,10 @@ import de.emn4tor.modules.lobby.listeners.LobbyJoinEvent;
 import de.emn4tor.modules.lobby.listeners.OnPlayerMoveEvent;
 import de.emn4tor.modules.lobby.listeners.QuitEvent;
 
+@ModuleInfo(name = "LobbyModule", server = "lobby")
 public class LobbyModule implements Module {
     private ServerConnector serverConnector;
 
-    @Override
-    public String getServerName() {
-        return "lobby";
-    }
-
-    @Override
-    public String getName() {
-        return "Lobby-Module";
-    }
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
