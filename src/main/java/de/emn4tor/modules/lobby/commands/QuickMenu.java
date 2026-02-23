@@ -174,7 +174,7 @@ public class QuickMenu implements CommandExecutor, Listener {
             }
             case CRATES -> {
                 player.closeInventory();
-                player.teleport(new Location(player.getWorld(), -119, -73, 61, 90, 0));
+                player.teleport(new Location(player.getWorld(), -119, 61, -73, 90, 0));
             }
             case CASINO -> {
                 player.closeInventory();

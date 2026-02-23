@@ -57,18 +57,17 @@ public class RedisManager {
 
     public void subscribe(String channel, JedisPubSub listener) {
         new Thread(() -> {
-            try {
-                Jedis subscriber = new Jedis(redisHost, redisPort);
+            try (Jedis subscriber = new Jedis(redisHost, redisPort)) {
                 if (redisPassword != null && !redisPassword.isEmpty()) {
                     subscriber.auth(redisPassword);
                 }
-                System.out.println("[RedisManager] Subscribing to channel: " + channel);
+                System.out.println("[RedisManager] Subscribing to: " + channel);
                 subscriber.subscribe(listener, channel);
+                System.out.println("[RedisManager] Unsubscribed from: " + channel);
             } catch (Exception e) {
-                System.err.println("[RedisManager] Failed to subscribe: " + e.getMessage());
                 e.printStackTrace();
             }
-        }).start();
+        }, "Redis-Subscriber-Thread").start();
     }
 
 

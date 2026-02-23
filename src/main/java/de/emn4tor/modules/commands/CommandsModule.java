@@ -8,7 +8,6 @@ package de.emn4tor.modules.commands;
 import de.emn4tor.Module;
 import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
-import de.emn4tor.modules.commands.admin.BoughtRankCommand;
 import de.emn4tor.modules.commands.admin.FlySpeedCommand;
 import de.emn4tor.modules.commands.admin.GamemodeCommand;
 import de.emn4tor.modules.commands.basic.*;
@@ -20,21 +19,17 @@ import de.emn4tor.modules.commands.social.InstagramCommand;
 import de.emn4tor.modules.commands.social.TikTokCommand;
 import de.emn4tor.modules.commands.social.YouTubeCommand;
 import de.emn4tor.modules.commands.workstations.*;
-import de.emn4tor.modules.muzzle.ChatManager;
 import de.emn4tor.utils.cooldown.CooldownManager;
 
 @ModuleInfo(name = "CommandsModule")
 public class CommandsModule implements Module {
     private CooldownManager cooldownManager;
-    private ChatManager chatManager;
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
-        chatManager = new ChatManager();
         cooldownManager = new CooldownManager(YellowMCCoreV2.getRedisManager());
         LanguageCommand languageCommand = new LanguageCommand();
         //Admin Commands
-        plugin.getCommand("boughtrank").setExecutor(new BoughtRankCommand(chatManager));
         plugin.getCommand("gamemode").setExecutor(new GamemodeCommand());
         plugin.getCommand("flyspeed").setExecutor(new FlySpeedCommand());
         //basic commands
