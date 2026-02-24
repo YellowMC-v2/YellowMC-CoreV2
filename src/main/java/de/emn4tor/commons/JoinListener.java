@@ -6,7 +6,7 @@ package de.emn4tor.commons;
  */
 
 import de.emn4tor.YellowMCCoreV2;
-import de.emn4tor.modules.commands.languagesel.LanguageCommand;
+import de.emn4tor.modules.global.commands.languagesel.LanguageCommand;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

@@ -7,18 +7,6 @@ import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
-import de.emn4tor.modules.TestModule.TestModule;
-import de.emn4tor.modules.commands.CommandsModule;
-import de.emn4tor.modules.economy.EconomyModule;
-import de.emn4tor.modules.furnitureshop.FurnitureShopModule;
-import de.emn4tor.modules.muzzle.MuzzleModule;
-import de.emn4tor.modules.playtime.PlaytimeModule;
-import de.emn4tor.modules.redeemables.RedeemableModule;
-import de.emn4tor.modules.scoreboard.ScoreboardModule;
-import de.emn4tor.modules.shops.ShopsModule;
-import de.emn4tor.modules.spawn.SpawnModule;
-import de.emn4tor.modules.starteritems.StarterItemsModule;
-import fi.septicuss.tooltips.utils.variable.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,0 +1,26 @@
+package de.emn4tor.modules.lobby.spawn;
+
+/*
+ *  @author: Emn4tor
+ *  @created: 23.08.2025
+ */
+
+import de.emn4tor.Module;
+import de.emn4tor.ModuleInfo;
+import de.emn4tor.YellowMCCoreV2;
+
+@ModuleInfo(name="SpawnModule", server = "lobby", priority = 10)
+public class SpawnModule implements Module {
+
+
+    @Override
+    public void onEnable(YellowMCCoreV2 plugin) {
+        plugin.getCommand("spawn").setExecutor(new SpawnCommand(plugin));
+        plugin.getServer().getPluginManager().registerEvents(new SpawnListener(), plugin);
+    }
+
+    @Override
+    public void onDisable(YellowMCCoreV2 plugin) {
+
+    }
+}

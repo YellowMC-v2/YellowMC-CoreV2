@@ -5,7 +5,7 @@ package de.emn4tor.modules.shops.core;
  *  @created: 24.04.2025
  */
 
-import de.emn4tor.modules.economy.coins.api.EconomyHandler;
+import de.emn4tor.modules.global.economy.coins.api.EconomyHandler;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -5,7 +5,7 @@ package de.emn4tor.modules.shops.keyshop;
  *  @created: 27.05.2025
  */
 
-import de.emn4tor.modules.economy.rubies.RubyHandler;
+import de.emn4tor.modules.global.economy.rubies.RubyHandler;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
