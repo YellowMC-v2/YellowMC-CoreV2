@@ -267,6 +267,8 @@ commands:
   quickmenu:
     description: Open the quick menu
     aliases: [qm]
+  claim:
+    description: Claim a chunk of land.
 
 
 permissions:
