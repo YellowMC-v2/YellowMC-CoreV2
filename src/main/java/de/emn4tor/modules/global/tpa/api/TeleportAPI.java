@@ -78,4 +78,48 @@ public final class TeleportAPI {
         runnable.runTaskTimer(this.core, 0,20);
         this.tasks.put(playerUUID, runnable);
     }
+
+    // In der Klasse TeleportAPI
+    public void teleport(@NonNull Player player, @NonNull Player target) {
+        var playerUUID = player.getUniqueId();
+
+        if (this.tasks.containsKey(playerUUID)) {
+            return;
+        }
+
+        var startLocation = player.getLocation();
+
+        var runnable = new BukkitRunnable() {
+            private int time = COUNTDOWN_SECONDS;
+
+            @Override
+            public void run() {
+                if (!player.isOnline() || !target.isOnline()) {
+                    tasks.remove(playerUUID);
+                    this.cancel();
+                    return;
+                }
+
+                if (!player.getLocation().getWorld().equals(startLocation.getWorld()) ||
+                        player.getLocation().distanceSquared(startLocation) > 1) {
+                    tasks.remove(playerUUID);
+                    this.cancel();
+                    return;
+                }
+
+                if (time <= 0) {
+                    tasks.remove(playerUUID);
+                    this.cancel();
+
+                    player.teleportAsync(target.getLocation());
+                    return;
+                }
+
+                time--;
+            }
+        };
+
+        runnable.runTaskTimer(this.core, 0, 20);
+        this.tasks.put(playerUUID, runnable);
+    }
 }
