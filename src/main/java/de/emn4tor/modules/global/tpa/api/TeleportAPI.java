@@ -1,6 +1,9 @@
 package de.emn4tor.modules.global.tpa.api;
 
+import com.google.common.io.ByteStreams;
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.data.RedisManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -79,7 +82,6 @@ public final class TeleportAPI {
         this.tasks.put(playerUUID, runnable);
     }
 
-    // In der Klasse TeleportAPI
     public void teleport(@NonNull Player player, @NonNull Player target) {
         var playerUUID = player.getUniqueId();
 
@@ -121,5 +123,67 @@ public final class TeleportAPI {
 
         runnable.runTaskTimer(this.core, 0, 20);
         this.tasks.put(playerUUID, runnable);
+    }
+
+    public void teleportToRemoteServer(@NonNull Player player, String targetServerId) {
+        var startLocation = player.getLocation();
+        var serverId = this.core.getConfig().getString("server-name");
+
+        new BukkitRunnable() {
+            private int time = COUNTDOWN_SECONDS;
+
+            @Override
+            public void run() {
+                if (!player.isOnline()) { this.cancel(); return; }
+
+                if (player.getLocation().distanceSquared(startLocation) > 1) {
+                    player.sendMessage("Teleport abgebrochen, du hast dich bewegt.");
+                    this.cancel();
+                    return;
+                }
+
+                if (time <= 0) {
+                    this.cancel();
+
+                    if (targetServerId.equals(serverId)) {
+                        player.sendMessage("GLEICHER SERVER");
+                        var targetUUIDString = RedisManager.getInstance().get("tpa:pending_teleport:" + player.getUniqueId());
+
+                        if (targetUUIDString != null) {
+                            player.sendMessage("UUIDSTRING");
+                            player.sendMessage(targetUUIDString);
+                            var target = Bukkit.getPlayer(UUID.fromString(targetUUIDString));
+
+                            player.sendMessage(target == null ? "NULL" : target.toString());
+
+                            if (target != null) {
+                                player.sendMessage("TARGET");
+                                player.teleportAsync(target.getLocation());
+                                player.sendMessage("Teleport erfolgreich!");
+
+                                RedisManager.getInstance().delete("tpa:pending_teleport:" + player.getUniqueId());
+
+                                return;
+                            }
+                        }
+                    } else {
+                        sendToData(player, targetServerId);
+                    }
+                    return;
+                }
+
+                player.sendMessage("Teleport in " + time + "...");
+                time--;
+            }
+        }.runTaskTimer(core, 0, 20);
+    }
+
+    private void sendToData(@NonNull Player player, String server) {
+        var out = ByteStreams.newDataOutput();
+
+        out.writeUTF("Connect");
+        out.writeUTF(server);
+
+        player.sendPluginMessage(core, "BungeeCord", out.toByteArray());
     }
 }

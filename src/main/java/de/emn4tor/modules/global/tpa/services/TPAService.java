@@ -1,48 +1,82 @@
 package de.emn4tor.modules.global.tpa.services;
 
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.data.RedisManager;
 import de.emn4tor.modules.global.tpa.api.TeleportAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
+import redis.clients.jedis.JedisPubSub;
 
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class TPAService {
     private final YellowMCCoreV2 core;
     private final TeleportAPI teleportAPI;
-    private final Map<UUID, UUID> tpaRequest = new ConcurrentHashMap<>();
+    private final RedisManager redis = RedisManager.getInstance();
 
     public TPAService(YellowMCCoreV2 core, TeleportAPI teleportAPI) {
         this.core = core;
         this.teleportAPI = teleportAPI;
+
+        this.setupRedisListener();
     }
 
-    public void sendRequest(@NonNull Player sender, @NonNull Player target) {
-        this.tpaRequest.put(target.getUniqueId(), sender.getUniqueId());
+    public void sendRequest(@NonNull Player sender, @NonNull String targetName) {
+        redis.publish("tpa_system", "REQUEST_INCOMING:" + targetName + ":" + sender.getName() + ":" + sender.getUniqueId());
 
-        sender.sendMessage("TPA Request an " + target.getName() + " verschickt.");
-
-        Bukkit.getScheduler().runTaskLater(this.core, () -> {
-            if (this.tpaRequest.get(target.getUniqueId()) != null &&
-                    this.tpaRequest.get(target.getUniqueId()).equals(sender.getUniqueId())) {
-                this.tpaRequest.remove(target.getUniqueId());
-                sender.sendMessage("TPA-Anfrage abgelaufen!");
-            }
-        }, 20 * 60 * 5);
+        sender.sendMessage("TPA-Anfrage an " + targetName + " verschickt.");
     }
 
-    public void acceptRequest(@NonNull Player target, @NonNull Player sender) {
-        var requesterUUID = this.tpaRequest.get(target.getUniqueId());
+    public void acceptRequest(@NonNull Player target, @NonNull String senderName) {
+        var senderUUIDString = this.redis.get("tpa:req:" + target.getUniqueId());
 
-        if (requesterUUID != null && requesterUUID.equals(sender.getUniqueId())) {
-            this.teleportAPI.teleport(sender, target);
+        if (senderUUIDString != null) {
+            var myServerId = this.core.getConfig().getString("server-name");
 
-            this.tpaRequest.remove(target.getUniqueId());
+            this.redis.setTemporary("tpa:pending_teleport:" + senderUUIDString, target.getUniqueId().toString(), 30);
+            this.redis.publish("tpa_system", "REQUEST_ACCEPTED:" + senderUUIDString + ":" + myServerId);
+            this.redis.delete("tpa:req:" + target.getUniqueId());
+
+            target.sendMessage("§aAnfrage angenommen.");
         } else {
-            target.sendMessage("Keine aktive TPA gefunden.");
+            target.sendMessage("§cKeine aktive Anfrage gefunden.");
         }
+    }
+
+    private void setupRedisListener() {
+        this.redis.subscribe("tpa_system", new JedisPubSub() {
+            @Override
+            public void onMessage(String channel, String message) {
+                var parts = message.split(":");
+                var action = parts[0];
+
+                if (action.equals("REQUEST_INCOMING")) {
+                    var targetName = parts[1];
+                    var senderName = parts[2];
+                    var senderUUID = UUID.fromString(parts[3]);
+
+                    var target = Bukkit.getPlayer(targetName);
+
+                    if (target != null) {
+                        redis.setTemporary("tpa:req:" + target.getUniqueId(), senderUUID.toString(), 60 * 5);
+
+                        target.sendMessage(senderName + " möchte sich zu dir teleportieren.");
+                        target.sendMessage("Nutze /tpaaccept " + senderName);
+                    }
+                }
+
+                if (action.equals("REQUEST_ACCEPTED")) {
+                    var senderUUID = UUID.fromString(parts[1]);
+                    var targetServer = parts[2];
+
+                    var sender = Bukkit.getPlayer(senderUUID);
+                    if (sender != null) {
+                        sender.sendMessage("Angeommen");
+                        teleportAPI.teleportToRemoteServer(sender, targetServer);
+                    }
+                }
+            }
+        });
     }
 }

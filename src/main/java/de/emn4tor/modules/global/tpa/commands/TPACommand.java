@@ -29,18 +29,14 @@ public final class TPACommand implements BasicCommand {
             return;
         }
 
-        var target = Bukkit.getPlayer(args[0]);
-        if (target == null) {
-            sender.sendMessage("Spieler '" + args[0] + "' wurde nicht gefunden.");
-            return;
-        }
+        var targetName = args[0];
 
-        if (target.equals(sender)) {
+        if (targetName.equalsIgnoreCase(sender.getName())) {
             sender.sendMessage("Du kannst dir nicht selbst eine Anfrage schicken.");
             return;
         }
 
-        this.tpaService.sendRequest(sender, target);
+        this.tpaService.sendRequest(sender, targetName);
     }
 
     @Override
