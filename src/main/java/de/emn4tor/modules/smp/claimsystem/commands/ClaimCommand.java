@@ -1,6 +1,7 @@
 package de.emn4tor.modules.smp.claimsystem.commands;
 
 import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.api.FormatService;
 import de.emn4tor.modules.smp.claimsystem.logic.ClaimManager;
 import de.emn4tor.modules.smp.claimsystem.logic.ClaimParticles;
 import de.emn4tor.modules.smp.claimsystem.models.Claim;
@@ -64,7 +65,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
                 return handleDelete(player);
             case "reload":
                 if (!player.hasPermission("claim.admin")) {
-                    player.sendRichMessage("<red>You do not have permission to reload claims.</red>");
+                    player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-reload-permission", FormatService.MessageType.SYSTEM));
                     return true;
                 }
                 claimManager.reloadClaims();
@@ -81,7 +82,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
             case "showborder":
                 return handleBorderShow(player);
             default:
-                player.sendRichMessage("<red>Unknown claim command. Use /claim, trust, untrust, reload.</red>");
+                player.sendRichMessage("<red>/claim, trust, untrust, reload.</red>");
                 return true;
         }
     }
@@ -96,11 +97,11 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         Chunk chunk = player.getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (claim == null) {
-            player.sendRichMessage("<red>No claim found at this location.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-unclaimed", FormatService.MessageType.SYSTEM));
             return true;
         }
         showClaimBorder(player, chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
-        player.sendRichMessage("<green>Showing claim border for 3 seconds.</green>");
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-border-success", FormatService.MessageType.SYSTEM));
         return true;
     }
 
@@ -121,16 +122,16 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
                 chunk.getWorld().getName());
 
         if (!claimManager.canPlayerClaim(player.getUniqueId())) {
-            player.sendRichMessage("<red>You cannot claim more chunks. Maximum reached.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-claim-cap", FormatService.MessageType.SYSTEM));
             return true;
         }
 
         if (claimManager.addClaim(claim)) {
             showClaimBorder(player);
-            player.sendRichMessage("<green>You have successfully claimed this chunk! " +
-                    "<yellow>(X: " + chunk.getX() + ", Z: " + chunk.getZ() + ", World: " + chunk.getWorld().getName() + ")</yellow>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-claim-success", FormatService.MessageType.SYSTEM) + "<yellow>(X: " + chunk.getX() + ", Z: " + chunk.getZ() + ", World: " + chunk.getWorld().getName() + ")</yellow>");
+
         } else {
-            player.sendRichMessage("<red>This chunk is already claimed.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-claim-occupied", FormatService.MessageType.SYSTEM));
         }
         return true;
     }
@@ -145,17 +146,19 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         Chunk chunk = player.getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (claim == null) {
-            player.sendRichMessage("<red>No claim found at this location.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-unclaimed", FormatService.MessageType.SYSTEM));
+
             return true;
         }
 
         if (!claim.getOwnerUUID().equals(player.getUniqueId())) {
-            player.sendRichMessage("<red>You do not own this claim.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-ownership", FormatService.MessageType.ERROR));
+
             return true;
         }
 
         claimManager.removeClaim(claim);
-        player.sendRichMessage("<green>Claim deleted successfully.</green>");
+        player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-delete-success", FormatService.MessageType.SYSTEM));
         return true;
     }
 
@@ -168,25 +171,25 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
      */
     private boolean handleTrust(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendRichMessage("<yellow>Usage: /claim trust <player></yellow>");
+            player.sendRichMessage("<yellow>/claim trust <player></yellow>");
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendRichMessage("<red>Player not found.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
         Chunk chunk = player.getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (claim == null || !claim.getOwnerUUID().equals(player.getUniqueId())) {
-            player.sendRichMessage("<red>You do not own this claim.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-ownership", FormatService.MessageType.ERROR));
             return true;
         }
 
         claimManager.addTrusted(claim, target.getUniqueId());
-        player.sendRichMessage("<green>Trusted " + target.getName() + " on this chunk.</green>");
+        YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-trust-success", FormatService.MessageType.SYSTEM, Map.of("0", target.getName()));
         return true;
     }
 
@@ -205,20 +208,20 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendRichMessage("<red>Player not found.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
         Chunk chunk = player.getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (claim == null || !claim.getOwnerUUID().equals(player.getUniqueId())) {
-            player.sendRichMessage("<red>You do not own this claim.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-ownership", FormatService.MessageType.ERROR));
             return true;
         }
 
         claimManager.trustConnectedChunks(player.getUniqueId(), target.getUniqueId(),
                 chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
-        player.sendRichMessage("<green>Trusted " + target.getName() + " on all connected chunks.</green>");
+        YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-trust-all-success", FormatService.MessageType.SYSTEM, Map.of("0", target.getName()));
         return true;
     }
 
@@ -237,19 +240,19 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendRichMessage("<red>Player not found.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
         Chunk chunk = player.getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (claim == null || !claim.getOwnerUUID().equals(player.getUniqueId())) {
-            player.sendRichMessage("<red>You do not own this claim.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-ownership", FormatService.MessageType.ERROR));
             return true;
         }
 
         claimManager.removeTrusted(claim, target.getUniqueId());
-        player.sendRichMessage("<green>Removed trust for " + target.getName() + " on this chunk.</green>");
+        YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-untrust-success", FormatService.MessageType.SYSTEM, Map.of("0", target.getName()));
         return true;
     }
 
@@ -268,20 +271,20 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendRichMessage("<red>Player not found.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "error-target-not-online", FormatService.MessageType.ERROR));
             return true;
         }
 
         Chunk chunk = player.getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (claim == null || !claim.getOwnerUUID().equals(player.getUniqueId())) {
-            player.sendRichMessage("<red>You do not own this claim.</red>");
+            player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-error-ownership", FormatService.MessageType.ERROR));
             return true;
         }
 
         claimManager.untrustConnectedChunks(player.getUniqueId(), target.getUniqueId(),
                 chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
-        player.sendRichMessage("<green>Removed trust for " + target.getName() + " on all connected chunks.</green>");
+        YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "claims-untrust-all-success", FormatService.MessageType.SYSTEM, Map.of("0", target.getName()));
         return true;
     }
 

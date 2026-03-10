@@ -1,5 +1,6 @@
 package de.emn4tor.modules.smp.claimsystem.listener;
 
+import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.smp.claimsystem.logic.ClaimManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -48,14 +49,17 @@ public class ChunkEnterListener implements Listener {
             ).getOwnerUUID();
 
             OfflinePlayer owner = Bukkit.getOfflinePlayer(ownerUUID);
-            territoryName = owner.getName() != null ? owner.getName() + "'s Territory" : "Unknown's Territory";
+            String unknownTerritory = YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "claims-enter-territory-unknown");
+            String territoryWithName = YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "claims-enter-territory", Map.of("0", owner.getName()));
+            territoryName = owner.getName() != null ? territoryWithName : unknownTerritory;
         } else {
             territoryName = "Wilderness";
         }
 
         // Only send message if player is entering a new territory
         if (!territoryName.equals(lastTerritory.get(player.getUniqueId()))) {
-            player.sendActionBar(MiniMessage.miniMessage().deserialize("<green>Entering</green> <yellow>" + territoryName + "</yellow>"));
+            String enteringText = YellowMCCoreV2.getTranslationService().translate(player.getUniqueId(), "claims-enter-text");
+            player.sendActionBar(MiniMessage.miniMessage().deserialize(enteringText + " <yellow>" + territoryName + "</yellow>"));
             lastTerritory.put(player.getUniqueId(), territoryName);
         }
     }
