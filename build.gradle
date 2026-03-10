@@ -31,8 +31,8 @@ repositories {
             url = uri("https://repo.yellowmc.de/releases/")
             name = "api"
             credentials {
-                username = "admin" //System.getenv("YELLOWMC_USER")
-                password = "H21Ufm47y0k3Kkyjl3xxUObD2ofGgxCx6h9p9MfBR4IH1TJRF4gUx++q0D5JiyPt"//System.getenv("YELLOWMC_PASSWORD")
+                username = System.getenv("YELLOWMC_USER")
+                password = System.getenv("YELLOWMC_PASSWORD")
             }
         }
     }
