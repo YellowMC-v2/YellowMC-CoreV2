@@ -1,6 +1,5 @@
 package de.emn4tor.modules.global.tpa.commands;
 
-import de.emn4tor.modules.global.tpa.api.TeleportAPI;
 import de.emn4tor.modules.global.tpa.utils.RTPInventoryHolder;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -13,12 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public final class RTPCommand implements BasicCommand {
-    private final TeleportAPI teleportAPI;
-
-    public RTPCommand(TeleportAPI teleportAPI) {
-        this.teleportAPI = teleportAPI;
-    }
-
     @Override
     public void execute(@NonNull CommandSourceStack commandSourceStack, String[] args) {
         if (!(commandSourceStack.getExecutor() instanceof Player player)) {

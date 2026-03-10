@@ -18,7 +18,7 @@ public class TPAModule implements Module {
     public void onEnable(YellowMCCoreV2 plugin) {
         this.teleportAPI = new TeleportAPI(plugin);
         this.randomTeleportAPI = new RandomTeleportAPI(plugin, this.teleportAPI);
-        this.rtpCommand = new RTPCommand(this.teleportAPI);
+        this.rtpCommand = new RTPCommand();
 
         plugin.getServer().getPluginManager().registerEvents(new RTPInventoryListener(this.randomTeleportAPI), plugin);
         plugin.registerCommand("rtp", this.rtpCommand);
