@@ -52,7 +52,7 @@ dependencies {
 
     compileOnly "de.tr7zw:item-nbt-api-plugin:2.10.0"
     compileOnly( 'com.sk89q.worldedit:worldedit-bukkit:7.3.0')
-    compileOnly "de.emn4tor:api:1.2-BETA"
+    compileOnly "de.emn4tor:api:1.5.1-BETA"
 }
 
 tasks {
