@@ -31,8 +31,8 @@ repositories {
             url = uri("https://repo.yellowmc.de/releases/")
             name = "api"
             credentials {
-                username = System.getenv("YELLOWMC_USER")
-                password = System.getenv("YELLOWMC_PASSWORD")
+                username = "admin" //System.getenv("YELLOWMC_USER")
+                password = "H21Ufm47y0k3Kkyjl3xxUObD2ofGgxCx6h9p9MfBR4IH1TJRF4gUx++q0D5JiyPt"//System.getenv("YELLOWMC_PASSWORD")
             }
         }
     }
@@ -52,7 +52,7 @@ dependencies {
 
     compileOnly "de.tr7zw:item-nbt-api-plugin:2.10.0"
     compileOnly( 'com.sk89q.worldedit:worldedit-bukkit:7.3.0')
-    compileOnly "de.emn4tor:api:1.2-BETA"
+    compileOnly "de.emn4tor:api:1.5.1-BETA"
 }
 
 tasks {
