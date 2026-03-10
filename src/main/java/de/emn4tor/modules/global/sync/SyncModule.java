@@ -8,7 +8,7 @@ import de.emn4tor.modules.global.sync.listener.SyncFreezeListener;
 import de.emn4tor.modules.global.sync.listener.TriggerSyncEvent;
 import de.emn4tor.modules.global.sync.task.SyncTask;
 
-@ModuleInfo(name= "SyncModule")
+//@ModuleInfo(name= "SyncModule")
 public class SyncModule implements Module {
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
