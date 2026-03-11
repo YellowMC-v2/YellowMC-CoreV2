@@ -7,6 +7,7 @@ import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
+import de.emn4tor.utils.bridge.NetworkBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,11 +20,14 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     TranslationService translationService;
     LocaleService localeService;
 
+    private NetworkBridge networkBridge;
+
     @Override
     public void onEnable() {
         translationService = Bukkit.getServicesManager().load(TranslationService.class);
         localeService = Bukkit.getServicesManager().load(LocaleService.class);
         messageService = Bukkit.getServicesManager().load(MessageService.class);
+        this.networkBridge = new NetworkBridge(this);
 
         if (translationService == null || localeService == null) {
             getLogger().severe("Failed to load TranslationService or LocaleService.");
@@ -57,6 +61,10 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         moduleManager.discoverModules();
         moduleManager.enableModules(this);
 
+        this.networkBridge.startRedisListener();
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         Bukkit.getServer().getPluginManager().registerEvents(new JoinListener(), this);
     }
 
@@ -84,5 +92,9 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
     public static LocaleService getLocaleService() {
         return getInstance().localeService;
+    }
+
+    public NetworkBridge getNetworkBridge() {
+        return networkBridge;
     }
 }
