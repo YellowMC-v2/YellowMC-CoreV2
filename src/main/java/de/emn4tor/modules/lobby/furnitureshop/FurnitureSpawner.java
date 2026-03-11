@@ -155,7 +155,7 @@ public class FurnitureSpawner {
     private void kickPlayersFromRegion() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if(FurnitureHoverListener.isInShop(player)) {
-                player.teleport(new Location(Bukkit.getWorld(worldName), -71, 63, -119, 90, 0));
+                player.teleport(new Location(Bukkit.getWorld(worldName), 75.41, 63.00, -118.71, 90, 0));
                 player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(player.getUniqueId(), "furniture-refresh-notification", FormatService.MessageType.SYSTEM));
             }
         }

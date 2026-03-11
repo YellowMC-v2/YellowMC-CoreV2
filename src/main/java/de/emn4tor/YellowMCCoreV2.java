@@ -23,6 +23,8 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         translationService = Bukkit.getServicesManager().load(TranslationService.class);
         localeService = Bukkit.getServicesManager().load(LocaleService.class);
         messageService = Bukkit.getServicesManager().load(MessageService.class);
