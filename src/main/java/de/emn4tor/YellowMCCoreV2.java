@@ -21,12 +21,12 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
     @Getter private LuckPerms luckPerms;
 
-    @Getter private ModuleManager moduleManager;
-    @Getter private RedisManager redisManager;
-    @Getter private MessageService messageService;
-    @Getter private TranslationService translationService;
-    @Getter private LocaleService localeService;
-    @Getter private SyncService syncService;
+    @Getter private static ModuleManager moduleManager;
+    @Getter private static RedisManager redisManager;
+    @Getter private static MessageService messageService;
+    @Getter private static TranslationService translationService;
+    @Getter private static LocaleService localeService;
+    @Getter private static SyncService syncService;
 
     @Override
     public void onEnable() {
