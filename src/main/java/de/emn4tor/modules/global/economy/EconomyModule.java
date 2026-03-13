@@ -23,7 +23,7 @@ public class EconomyModule implements Module {
         economyManager = new EconomyManager(plugin);
         economyManager.initialize();
         plugin.getCommand("balance").setExecutor(new BalanceCommand(economyManager));
-        plugin.getCommand("pay").setExecutor(new PayCommand(economyManager, YellowMCCoreV2.getRedisManager()));
+        plugin.getCommand("pay").setExecutor(new PayCommand(economyManager, YellowMCCoreV2.getInstance().getRedisManager()));
         plugin.getCommand("ecoadmin").setExecutor(new AdminCommand(economyManager));
 
         //Rubies
