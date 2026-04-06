@@ -234,6 +234,13 @@ commands:
       - scene
     permission: scenes.use
 
+  home:
+    description: Manage homes
+    usage: /home
+    aliases:
+      - homes
+      - h
+
 
 
     #synced shit
