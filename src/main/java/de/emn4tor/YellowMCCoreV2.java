@@ -150,4 +150,4 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         return networkBridge;
     }
 }
-}
+

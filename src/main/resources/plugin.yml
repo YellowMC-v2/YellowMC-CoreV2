@@ -272,6 +272,10 @@ commands:
     aliases: [qm]
   claim:
     description: Claim a chunk of land.
+  crates:
+    description: Open the crate menu.
+    aliases: [crate]
+    permission: core.crates.command
 
 
 permissions:
