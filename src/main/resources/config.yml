@@ -2,9 +2,9 @@ server-name: "Server"
 
 credentials:
   database:
-    url: "jdbc:mysql://localhost:3306/core_db?useSSL=false"
+    url: "jdbc:mysql://localhost:3306/yellowmc?useSSL=false"
     user: devuser
-    password: "123"
+    password: "simon123"
   redis:
     host: localhost
     port: 6379
@@ -19,3 +19,5 @@ hikari:
 
 furniture:
   enabled: false
+
+śerver-id: "placeholder"
