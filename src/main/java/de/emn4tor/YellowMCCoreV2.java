@@ -8,6 +8,7 @@ import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
+import de.emn4tor.utils.bridge.NetworkBridge;
 import de.emn4tor.modules.global.economy.coins.api.repositories.impl.MySQLCoinRepository;
 import de.emn4tor.modules.global.economy.coins.api.services.CoinService;
 import lombok.Getter;
@@ -32,8 +33,14 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     @Getter private static SyncService syncService;
     @Getter private static CoinService coinService;
 
+    private NetworkBridge networkBridge;
+
     @Override
     public void onEnable() {
+        translationService = Bukkit.getServicesManager().load(TranslationService.class);
+        localeService = Bukkit.getServicesManager().load(LocaleService.class);
+        messageService = Bukkit.getServicesManager().load(MessageService.class);
+        this.networkBridge = new NetworkBridge(this);
         instance = this;
 
         this.luckPerms = LuckPermsProvider.get();
@@ -50,6 +57,11 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
 
+        this.networkBridge.startRedisListener();
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
+        Bukkit.getServer().getPluginManager().registerEvents(new JoinListener(), this);
         getLogger().info("YellowMC Core enabled successfully.");
     }
 
@@ -133,4 +145,9 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     public static String getServerName() {
         return getInstance().getConfig().getString("server-name", "unknown-server");
     }
+
+    public NetworkBridge getNetworkBridge() {
+        return networkBridge;
+    }
+}
 }

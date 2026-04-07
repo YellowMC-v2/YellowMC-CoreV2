@@ -32,7 +32,6 @@ public class TPAModule implements Module {
         this.tpaCommand = new TPACommand(this.tpaService);
         this.tpaAcceptCommand = new TPAAcceptCommand(this.tpaService);
 
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
         plugin.getServer().getPluginManager().registerEvents(new TPAListener(), plugin);
 
         plugin.getServer().getPluginManager().registerEvents(new RTPInventoryListener(this.randomTeleportAPI), plugin);
