@@ -6,8 +6,8 @@ import java.util.UUID;
 
 public interface CoinRepository {
     void setupRepository();
-    double findCoinsByUuid(@NotNull UUID uuid);
-    void addCoinsByUuid(@NotNull UUID uuid, double coins);
-    void setCoinsByUuid(@NotNull UUID uuid, double coins);
-    void removeCoinsByUuid(@NotNull UUID uuid, double coins);
+    int findCoinsByUuid(@NotNull UUID uuid);
+    void addCoinsByUuid(@NotNull UUID uuid, int coins);
+    void setCoinsByUuid(@NotNull UUID uuid, int coins);
+    void removeCoinsByUuid(@NotNull UUID uuid, int coins);
 }

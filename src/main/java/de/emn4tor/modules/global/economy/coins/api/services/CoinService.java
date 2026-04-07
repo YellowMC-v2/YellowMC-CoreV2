@@ -30,40 +30,40 @@ public class CoinService {
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveDirtyPlayersToDatabase, 100L, 6000L);
     }
 
-    public double getCoins(@NotNull UUID uuid) {
+    public int getCoins(@NotNull UUID uuid) {
         var key = REDIS_PREFIX + uuid.toString();
         var cachedValue = this.redisManager.get(key);
 
-        if (cachedValue != null) return Double.parseDouble(cachedValue);
+        if (cachedValue != null) return Integer.parseInt(cachedValue);
 
         var dbValue = this.coinRepository.findCoinsByUuid(uuid);
-        var finalValue = (dbValue == -1) ? 0.0 : dbValue;
+        var finalValue = (dbValue == -1) ? 0 : dbValue;
 
         this.redisManager.setTemporary(key, String.valueOf(finalValue), 3600);
         return finalValue;
     }
 
-    public void addCoins(@NotNull UUID uuid, double amount) {
+    public void addCoins(@NotNull UUID uuid, int amount) {
         if (amount <= 0) return;
         this.updateBalance(uuid, this.getCoins(uuid) + amount, "ADDED", amount);
     }
 
-    public void removeCoins(@NotNull UUID uuid, double amount) {
+    public void removeCoins(@NotNull UUID uuid, int amount) {
         if (amount <= 0) return;
         this.updateBalance(uuid, Math.max(0, this.getCoins(uuid) - amount), "REMOVED", amount);
     }
 
-    public void setCoins(@NotNull UUID uuid, double amount) {
+    public void setCoins(@NotNull UUID uuid, int amount) {
         this.updateBalance(uuid, Math.max(0, amount), "SET", amount);
     }
 
-    private void updateBalance(UUID uuid, double newTotal, String action, double change) {
+    private void updateBalance(UUID uuid, int newTotal, String action, int change) {
         this.redisManager.setTemporary(REDIS_PREFIX + uuid.toString(), String.valueOf(newTotal), 3600);
         this.dirtyPlayers.add(uuid);
         this.redisManager.publish(CHANNEL_UPDATE, uuid + ":" + action + ":" + change + ":" + this.serverId);
     }
 
-    public void handleExternalUpdate(UUID uuid, String action, double amount) {
+    public void handleExternalUpdate(UUID uuid, String action, int amount) {
         this.redisManager.delete(REDIS_PREFIX + uuid.toString());
 
         var player = Bukkit.getPlayer(uuid);
@@ -90,7 +90,7 @@ public class CoinService {
         }
     }
 
-    private void saveToDatabase(UUID uuid, double balance) {
+    private void saveToDatabase(UUID uuid, int balance) {
         this.coinRepository.setCoinsByUuid(uuid, balance);
     }
 

@@ -15,7 +15,7 @@ public final class MySQLCoinRepository implements CoinRepository {
 
     @Override
     public void setupRepository() {
-        var statement = "CREATE TABLE IF NOT EXISTS player_coins (uuid VARCHAR(36) PRIMARY KEY, coins DOUBLE)";
+        var statement = "CREATE TABLE IF NOT EXISTS player_coins (uuid VARCHAR(36) PRIMARY KEY, coins INT)";
 
         try (var preparedStatement = this.connection.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
@@ -25,7 +25,7 @@ public final class MySQLCoinRepository implements CoinRepository {
     }
 
     @Override
-    public double findCoinsByUuid(@NotNull UUID uuid) {
+    public int findCoinsByUuid(@NotNull UUID uuid) {
         var statement = "SELECT * FROM player_coins WHERE uuid = ?";
 
         try (var preparedStatement = this.connection.prepareStatement(statement)) {
@@ -34,7 +34,7 @@ public final class MySQLCoinRepository implements CoinRepository {
             var resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getDouble("coins");
+                return resultSet.getInt("coins");
             }
         } catch (SQLException sqlException) {
             YellowMCCoreV2.getInstance().getLogger().severe(sqlException.getMessage());
@@ -44,12 +44,12 @@ public final class MySQLCoinRepository implements CoinRepository {
     }
 
     @Override
-    public void addCoinsByUuid(@NotNull UUID uuid, double coins) {
+    public void addCoinsByUuid(@NotNull UUID uuid, int coins) {
         var statement = "INSERT INTO player_coins (uuid, coins) VALUES (?,?) ON DUPLICATE KEY UPDATE coins = coins + VALUES(coins)";
 
         try (var preparedStatement = this.connection.prepareStatement(statement)) {
             preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setDouble(2, coins);
+            preparedStatement.setInt(2, coins);
 
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
@@ -58,12 +58,12 @@ public final class MySQLCoinRepository implements CoinRepository {
     }
 
     @Override
-    public void setCoinsByUuid(@NotNull UUID uuid, double coins) {
+    public void setCoinsByUuid(@NotNull UUID uuid, int coins) {
         var statement = "INSERT INTO player_coins (uuid, coins) VALUES (?,?) ON DUPLICATE KEY UPDATE coins = VALUES(coins)";
 
         try (var preparedStatement = this.connection.prepareStatement(statement)) {
             preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setDouble(2, coins);
+            preparedStatement.setInt(2, coins);
 
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
@@ -72,11 +72,11 @@ public final class MySQLCoinRepository implements CoinRepository {
     }
 
     @Override
-    public void removeCoinsByUuid(@NotNull UUID uuid, double coins) {
+    public void removeCoinsByUuid(@NotNull UUID uuid, int coins) {
         var statement = "UPDATE player_coins SET coins = coins - ? WHERE uuid = ?";
 
         try (var preparedStatement = this.connection.prepareStatement(statement)) {
-            preparedStatement.setDouble(1, coins);
+            preparedStatement.setInt(1, coins);
             preparedStatement.setString(2, uuid.toString());
 
             preparedStatement.executeUpdate();

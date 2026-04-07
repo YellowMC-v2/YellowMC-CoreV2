@@ -22,7 +22,7 @@ public class CoinUpdateListener extends JedisPubSub {
 
         var uuid = UUID.fromString(parts[0]);
         var action = parts[1];
-        var amount = Double.parseDouble(parts[2]);
+        var amount = Integer.parseInt(parts[2]);
         var originServerId = parts[3];
 
         if (!originServerId.equals(this.localServerId)) {

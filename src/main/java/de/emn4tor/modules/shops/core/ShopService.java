@@ -23,7 +23,7 @@ public class ShopService {
         double price = item.getPrice();
 
         if (coinService.getCoins(uuid) >= price) {
-            coinService.removeCoins(uuid, price);
+            coinService.removeCoins(uuid, (int) price);
 
             ItemStack stack = new ItemStack(item.getMaterial(), item.getAmount());
             ItemMeta meta = stack.getItemMeta();

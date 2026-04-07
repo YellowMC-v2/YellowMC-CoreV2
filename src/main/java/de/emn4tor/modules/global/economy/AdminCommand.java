@@ -38,9 +38,9 @@ public class AdminCommand implements CommandExecutor, TabCompleter {
         var action = args[1].toLowerCase();
         var targetName = args[2];
 
-        double amount;
+        int amount;
         try {
-            amount = Double.parseDouble(args[3]);
+            amount = Integer.parseInt(args[3]);
         } catch (NumberFormatException exception) {
             sender.sendMessage(this.mm.deserialize("<red>Invalid number amount!"));
             return true;
@@ -51,14 +51,14 @@ public class AdminCommand implements CommandExecutor, TabCompleter {
 
         switch (currency) {
             case "coins" -> this.handleCoins(sender, target.getName(), uuid, action, amount);
-            case "rubies" -> this.handleRubies(sender, target.getName(), uuid, action, (int) amount);
+            case "rubies" -> this.handleRubies(sender, target.getName(), uuid, action, amount);
             default -> sender.sendMessage(this.mm.deserialize("<red>Invalid currency! Use coins or rubies."));
         }
 
         return true;
     }
 
-    private void handleCoins(CommandSender sender, String name, java.util.UUID uuid, String action, double amount) {
+    private void handleCoins(CommandSender sender, String name, java.util.UUID uuid, String action, int amount) {
         switch (action) {
             case "give" -> {
                 this.coinService.addCoins(uuid, amount);

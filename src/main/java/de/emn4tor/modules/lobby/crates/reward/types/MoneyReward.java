@@ -13,6 +13,6 @@ public class MoneyReward extends BaseReward {
 
     @Override
     public void give(Player player) {
-        YellowMCCoreV2.getCoinService().addCoins(player.getUniqueId(), (double) amount);
+        YellowMCCoreV2.getCoinService().addCoins(player.getUniqueId(), amount);
     }
 }

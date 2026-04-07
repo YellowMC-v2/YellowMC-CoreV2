@@ -34,9 +34,9 @@ public class PayCommand implements CommandExecutor {
             return true;
         }
 
-        var amount = 0.0;
+        var amount = 0;
         try {
-            amount = Double.parseDouble(args[1]);
+            amount = Integer.parseInt(args[1]);
         } catch (NumberFormatException exception) {
             player.sendRichMessage(YellowMCCoreV2.getMessageService().sendMessage(
                     player.getUniqueId(), "economy-error-nan", FormatService.MessageType.ERROR
