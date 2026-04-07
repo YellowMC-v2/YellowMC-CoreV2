@@ -50,7 +50,7 @@ dependencies {
     compileOnly ('net.dmulloy2:ProtocolLib:5.4.0')
     compileOnly ('com.github.Septicuss:tooltips:2.7')
 
-    compileOnly "de.tr7zw:item-nbt-api-plugin:2.10.0"
+    compileOnly "de.tr7zw:item-nbt-api-plugin:2.15.7"
     compileOnly( 'com.sk89q.worldedit:worldedit-bukkit:7.4.2')
     compileOnly "de.emn4tor:api:1.5.2-BETA"
 }
