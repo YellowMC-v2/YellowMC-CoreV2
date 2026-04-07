@@ -9,10 +9,12 @@ import org.bukkit.entity.Player;
 @Getter
 @SuperBuilder
 public class MoneyReward extends BaseReward {
-    private final int amount;
+    private final double amount;
 
     @Override
     public void give(Player player) {
-        EconomyHandler.addCoins(player, amount);
+        player.sendMessage(EconomyHandler.addCoins(player, amount)
+                ? "<green>You received <yellow>" + amount + " Coins!"
+                : "<red>Failed to add coins to your account. Please contact support.");
     }
 }

@@ -22,7 +22,7 @@ public class RewardFactory {
                     .displayName(name)
                     .displayItem(displayItem)
                     .weight(weight)
-                    .amount(section.getInt("amount", 0))
+                    .amount((double)section.getInt("amount", 0))
                     .build();
             case RUBIES -> RubyReward.builder()
                     .type(type)
