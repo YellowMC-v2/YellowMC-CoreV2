@@ -9,133 +9,147 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 import java.util.Random;
 
 public class CrateAnimation {
 
-    // Border slots (0-9, 17-26) that will be filled with random glass panes
-    List<Integer> borderSlots = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26);
-    // Free slots where the "spinning" items will appear
-    private static final List<Integer> FREE_SLOTS = List.of(10, 11, 12, 13, 14, 15, 16);
-
-    // The "winner" display slot in the center of the inventory
-    private static final int WINNER_SLOT = 13;
-
+    private static final MiniMessage MM = MiniMessage.miniMessage();
     private static final Random RANDOM = new Random();
 
-    private static final Material[] GLASS_PANES = {
-            Material.WHITE_STAINED_GLASS_PANE, Material.ORANGE_STAINED_GLASS_PANE,
-            Material.MAGENTA_STAINED_GLASS_PANE, Material.LIGHT_BLUE_STAINED_GLASS_PANE,
-            Material.YELLOW_STAINED_GLASS_PANE, Material.LIME_STAINED_GLASS_PANE,
-            Material.PINK_STAINED_GLASS_PANE, Material.GRAY_STAINED_GLASS_PANE,
-            Material.LIGHT_GRAY_STAINED_GLASS_PANE, Material.CYAN_STAINED_GLASS_PANE,
-            Material.PURPLE_STAINED_GLASS_PANE, Material.BLUE_STAINED_GLASS_PANE,
-            Material.BROWN_STAINED_GLASS_PANE, Material.GREEN_STAINED_GLASS_PANE,
-            Material.RED_STAINED_GLASS_PANE, Material.BLACK_STAINED_GLASS_PANE
-    };
-
-    // Random filler materials for the spinning free slots TODO: replace with displayItem from BaseItem (Not implemented yet)
-    private static final Material[] FILLER_MATERIALS = {
-            Material.DIAMOND, Material.GOLD_INGOT, Material.IRON_INGOT,
-            Material.EMERALD, Material.COAL, Material.REDSTONE,
-            Material.LAPIS_LAZULI, Material.QUARTZ, Material.AMETHYST_SHARD,
-            Material.NETHER_STAR, Material.ENDER_PEARL, Material.BLAZE_ROD,
-            Material.EXPERIENCE_BOTTLE, Material.TOTEM_OF_UNDYING, Material.TRIDENT
-    };
-
+    private static final int INVENTORY_SIZE = 27;
+    private static final int WINNER_SLOT = 13;
     private static final int TOTAL_STEPS = 40;
     private static final double SLOWDOWN_THRESHOLD = 0.6;
+
+    private static final int[] BORDER_SLOTS = {
+            0, 1, 2, 3, 4, 5, 6, 7, 8,
+            18, 19, 20, 21, 22, 23, 24, 25, 26
+    };
+
+    private static final int[] FREE_SLOTS = { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+
+    private static final Material[] GLASS_PANES = {
+            Material.WHITE_STAINED_GLASS_PANE,      Material.ORANGE_STAINED_GLASS_PANE,
+            Material.MAGENTA_STAINED_GLASS_PANE,    Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+            Material.YELLOW_STAINED_GLASS_PANE,     Material.LIME_STAINED_GLASS_PANE,
+            Material.PINK_STAINED_GLASS_PANE,       Material.GRAY_STAINED_GLASS_PANE,
+            Material.LIGHT_GRAY_STAINED_GLASS_PANE, Material.CYAN_STAINED_GLASS_PANE,
+            Material.PURPLE_STAINED_GLASS_PANE,     Material.BLUE_STAINED_GLASS_PANE,
+            Material.BROWN_STAINED_GLASS_PANE,      Material.GREEN_STAINED_GLASS_PANE,
+            Material.RED_STAINED_GLASS_PANE,        Material.BLACK_STAINED_GLASS_PANE
+    };
+
+    private static final ItemStack[] GLASS_PANE_ITEMS;
+
+    static {
+        GLASS_PANE_ITEMS = new ItemStack[GLASS_PANES.length];
+        for (int i = 0; i < GLASS_PANES.length; i++) {
+            GLASS_PANE_ITEMS[i] = new ItemStack(GLASS_PANES[i]);
+        }
+    }
+
+    private BukkitTask currentTask;
+
+    public void cancel() {
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
+    }
 
     public void spin(Player player, Crate crate, BaseReward reward, Runnable onFinish) {
         Inventory inv = YellowMCCoreV2.getInstance().getServer().createInventory(
                 new CrateInvHolder(),
-                27,
-                MiniMessage.miniMessage().deserialize("<red>Spinning...</red>")
+                INVENTORY_SIZE,
+                MM.deserialize("<red><bold>Opening Crate…</bold></red>")
         );
 
-        randomizeBorder(inv);
+        fillBorder(inv);
         player.openInventory(inv);
 
-        runAnimationStep(player, inv, crate, reward, 0, onFinish);
+        scheduleNextStep(player, inv, crate, reward, 0, onFinish);
     }
 
-    private void runAnimationStep(Player player, Inventory inv, Crate crate, BaseReward reward, int currentStep, Runnable onFinish) {
-        if (!player.isOnline()) return;
-
-        if (currentStep >= TOTAL_STEPS) {
-            placeWinner(inv, reward);
-            player.updateInventory();
-            player.playSound(player.getLocation(), "minecraft:block.note_block.pling", 1.0f, 2.0f);
-            if (onFinish != null) onFinish.run();
-            return;
-        }
-
-        randomizeFreeSlots(inv, crate);
-
-        boolean isNearEnd = currentStep >= TOTAL_STEPS - 3;
-        if (isNearEnd) {
-            inv.setItem(WINNER_SLOT, buildDisplayItem(reward));
-        }
-
-        player.updateInventory();
-        player.playSound(player.getLocation(), "minecraft:block.note_block.hat", 1.0f, 1.0f);
-
-        long nextDelay = computeDelay(currentStep);
-
-        new org.bukkit.scheduler.BukkitRunnable() {
+    private void scheduleNextStep(
+            Player player, Inventory inv,
+            Crate crate, BaseReward reward,
+            int step, Runnable onFinish
+    ) {
+        this.currentTask = new BukkitRunnable() {
             @Override
             public void run() {
-                runAnimationStep(player, inv, crate, reward, currentStep + 1, onFinish);
+                if (!player.isOnline() || !(player.getOpenInventory().getTopInventory().getHolder() instanceof CrateInvHolder)) {
+                    cancel();
+                    return;
+                }
+
+                if (step >= TOTAL_STEPS) {
+                    finalizeAnimation(player, inv, reward, onFinish);
+                    return;
+                }
+
+                fillBorder(inv);
+                fillFreeSlots(inv, crate, reward, step);
+                player.updateInventory();
+                player.playSound(player.getLocation(), "minecraft:block.note_block.hat", 1.0f, pitchForStep(step));
+
+                scheduleNextStep(player, inv, crate, reward, step + 1, onFinish);
             }
-        }.runTaskLater(YellowMCCoreV2.getInstance(), nextDelay);
+        }.runTaskLater(YellowMCCoreV2.getInstance(), computeDelay(step));
     }
 
-    /**
-     * Computes an increasing tick delay based on how far into the animation we are.
-     * Early steps = fast (2 ticks), late steps = slow (up to 10 ticks).
-     */
-    private long computeDelay(int currentStep) {
-        double progress = (double) currentStep / TOTAL_STEPS;
-        if (progress < SLOWDOWN_THRESHOLD) return 2L;
-        double slowProgress = (progress - SLOWDOWN_THRESHOLD) / (1.0 - SLOWDOWN_THRESHOLD);
-        return Math.round(2 + slowProgress * 8);
+    private void finalizeAnimation(Player player, Inventory inv, BaseReward reward, Runnable onFinish) {
+        for (int slot : FREE_SLOTS) {
+            inv.setItem(slot, null);
+        }
+        inv.setItem(WINNER_SLOT, buildDisplayItem(reward));
+        player.updateInventory();
+        player.playSound(player.getLocation(), "minecraft:block.note_block.pling", 1.0f, 2.0f);
+        if (onFinish != null) onFinish.run();
     }
 
-
-    private void randomizeFreeSlots(Inventory inventory, Crate crate) {
+    private void fillFreeSlots(Inventory inv, Crate crate, BaseReward reward, int step) {
         List<BaseReward> rewards = crate.getRewards();
+        boolean showWinner = step >= TOTAL_STEPS - 3;
+
         for (int slot : FREE_SLOTS) {
-            BaseReward randomReward = rewards.get(RANDOM.nextInt(rewards.size()));
-            inventory.setItem(slot, buildDisplayItem(randomReward));
+            if (showWinner && slot == WINNER_SLOT) {
+                inv.setItem(slot, buildDisplayItem(reward));
+            } else {
+                BaseReward pick = rewards.get(RANDOM.nextInt(rewards.size()));
+                inv.setItem(slot, buildDisplayItem(pick));
+            }
         }
     }
 
-    private void placeWinner(Inventory inventory, BaseReward reward) {
-        for (int slot : FREE_SLOTS) {
-            inventory.setItem(slot, null);
+    private void fillBorder(Inventory inv) {
+        for (int slot : BORDER_SLOTS) {
+            inv.setItem(slot, GLASS_PANE_ITEMS[RANDOM.nextInt(GLASS_PANE_ITEMS.length)]);
         }
-        inventory.setItem(WINNER_SLOT, buildDisplayItem(reward));
     }
 
-    /**
-     * Builds a display ItemStack for the reward.
-     * Falls back to PAPER if the reward has no custom display item.
-     */
-    private ItemStack buildDisplayItem(BaseReward reward) {
-        ItemStack item = reward.getDisplayItem();
+    private static long computeDelay(int step) {
+        double progress = (double) step / TOTAL_STEPS;
+        if (progress < SLOWDOWN_THRESHOLD) return 2L;
+        double t = (progress - SLOWDOWN_THRESHOLD) / (1.0 - SLOWDOWN_THRESHOLD);
+        return Math.round(2 + t * 8);
+    }
+
+    private static float pitchForStep(int step) {
+        double progress = (double) step / TOTAL_STEPS;
+        return (float) (0.8 + progress * 0.4);
+    }
+
+    private static ItemStack buildDisplayItem(BaseReward reward) {
+        ItemStack item = reward.getDisplayItem().clone();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(MiniMessage.miniMessage().deserialize("<gold><bold>" + reward.getDisplayName()));
+            meta.displayName(MM.deserialize("<gold><bold>" + reward.getDisplayName() + "</bold></gold>"));
             item.setItemMeta(meta);
         }
         return item;
-    }
-
-    private void randomizeBorder(Inventory inventory) {
-        for (int slot : borderSlots) {
-            inventory.setItem(slot, new ItemStack(GLASS_PANES[RANDOM.nextInt(GLASS_PANES.length)]));
-        }
     }
 }

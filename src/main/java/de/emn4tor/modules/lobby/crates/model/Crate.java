@@ -21,7 +21,6 @@ public class Crate {
     private final Location crateLocation;
     private final Particle particleEffect;
     private final ItemStack keyItem;
-    private final boolean hasPhysicalKey;
     private final boolean hasParticleEffect;
     private final List<BaseReward> rewards;
 }
