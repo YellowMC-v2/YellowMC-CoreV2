@@ -8,17 +8,20 @@ import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
+import de.emn4tor.modules.global.economy.coins.api.repositories.impl.MySQLCoinRepository;
+import de.emn4tor.modules.global.economy.coins.api.services.CoinService;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public final class YellowMCCoreV2 extends JavaPlugin {
 
     @Getter private static YellowMCCoreV2 instance;
-
     @Getter private LuckPerms luckPerms;
 
     @Getter private static ModuleManager moduleManager;
@@ -27,6 +30,7 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     @Getter private static TranslationService translationService;
     @Getter private static LocaleService localeService;
     @Getter private static SyncService syncService;
+    @Getter private static CoinService coinService;
 
     @Override
     public void onEnable() {
@@ -41,19 +45,51 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         if (!initSQL()) return;
 
         initRedis();
+        initEconomy();
         initModules();
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+
         getLogger().info("YellowMC Core enabled successfully.");
     }
 
     @Override
     public void onDisable() {
+        if (coinService != null) {
+            coinService.shutdown();
+        }
+
         if (moduleManager != null) {
             moduleManager.disableModules(this);
         }
+
         SQLManager.getInstance().close();
+
+        if (redisManager != null) {
+            redisManager.close();
+        }
+
         getLogger().info("YellowMC Core disabled.");
+    }
+
+    private void initEconomy() {
+        Connection connection = null;
+
+        try {
+            connection = SQLManager.getInstance().getConnection();
+        } catch (SQLException exception) {
+            this.getLogger().severe(exception.getMessage());
+            return;
+        }
+
+        var coinRepository = new MySQLCoinRepository(connection);
+
+        coinRepository.setupRepository();
+
+        coinService = new CoinService(coinRepository, redisManager, getServerName());
+        coinService.init(this);
+
+        getLogger().info("Economy-Service initialized.");
     }
 
     private boolean loadServices() {
@@ -95,6 +131,6 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     }
 
     public static String getServerName() {
-        return getInstance().getConfig().getString("server-name");
+        return getInstance().getConfig().getString("server-name", "unknown-server");
     }
 }

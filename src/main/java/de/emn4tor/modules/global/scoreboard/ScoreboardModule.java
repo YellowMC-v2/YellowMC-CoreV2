@@ -1,43 +1,40 @@
 package de.emn4tor.modules.global.scoreboard;
 
 /*
- *  @author: Emn4tor
- *  @created: 21.08.2025
+ * @author: Emn4tor
+ * @created: 21.08.2025
  */
 
 import de.emn4tor.Module;
 import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
-import de.emn4tor.modules.global.economy.EconomyModule;
-import de.emn4tor.modules.global.economy.coins.api.EconomyManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 @ModuleInfo(name = "ScoreboardModule", priority = 90)
 public class ScoreboardModule implements Module {
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
-        EconomyManager ecoManager = EconomyModule.getEconomyManager();
+        var coinService = YellowMCCoreV2.getCoinService();
 
-        if (ecoManager == null) {
-            plugin.getLogger().severe("ScoreboardModule: EconomyManager is null! Disabling module...");
+        if (coinService == null) {
+            plugin.getLogger().severe("ScoreboardModule: CoinService is null! Disabling module...");
             return;
         }
 
-        ScoreboardManager boards = new ScoreboardManager(plugin, new VariableManager(EconomyModule.getEconomyManager()));
-        plugin.getServer().getPluginManager().registerEvents(boards, plugin);
+        var variableManager = new VariableManager(coinService);
+        var scoreboardManager = new ScoreboardManager(plugin, variableManager);
+
+        Bukkit.getPluginManager().registerEvents(scoreboardManager, plugin);
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            // Update scoreboards every 2 seconds
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                boards.updateScoreBoard(p);
+            for (var player : Bukkit.getOnlinePlayers()) {
+                scoreboardManager.updateScoreBoard(player);
             }
         }, 20L, 40L);
     }
 
     @Override
     public void onDisable(YellowMCCoreV2 plugin) {
-
     }
 }
