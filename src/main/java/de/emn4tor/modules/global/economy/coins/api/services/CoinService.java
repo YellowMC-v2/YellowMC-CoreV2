@@ -37,7 +37,13 @@ public class CoinService {
         if (cachedValue != null) return Integer.parseInt(cachedValue);
 
         var dbValue = this.coinRepository.findCoinsByUuid(uuid);
-        var finalValue = (dbValue == -1) ? 0 : dbValue;
+        var finalValue = dbValue;
+
+        if (dbValue == -1) {
+            finalValue = 100;
+
+            this.coinRepository.setCoinsByUuid(uuid, finalValue);
+        }
 
         this.redisManager.setTemporary(key, String.valueOf(finalValue), 3600);
         return finalValue;
