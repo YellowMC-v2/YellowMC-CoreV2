@@ -9,6 +9,7 @@ import de.emn4tor.modules.global.tpa.commands.RTPCommand;
 import de.emn4tor.modules.global.tpa.commands.TPAAcceptCommand;
 import de.emn4tor.modules.global.tpa.commands.TPACommand;
 import de.emn4tor.modules.global.tpa.listener.RTPInventoryListener;
+import de.emn4tor.modules.global.tpa.listener.TPAListener;
 import de.emn4tor.modules.global.tpa.services.TPAService;
 
 @ModuleInfo(name="TPA-Module")
@@ -30,6 +31,9 @@ public class TPAModule implements Module {
 
         this.tpaCommand = new TPACommand(this.tpaService);
         this.tpaAcceptCommand = new TPAAcceptCommand(this.tpaService);
+
+        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
+        plugin.getServer().getPluginManager().registerEvents(new TPAListener(), plugin);
 
         plugin.getServer().getPluginManager().registerEvents(new RTPInventoryListener(this.randomTeleportAPI), plugin);
 

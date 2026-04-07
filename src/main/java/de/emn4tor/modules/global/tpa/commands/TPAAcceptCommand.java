@@ -28,13 +28,7 @@ public final class TPAAcceptCommand implements BasicCommand {
             return;
         }
 
-        var sender = Bukkit.getPlayer(args[0]);
-        if (sender == null) {
-            target.sendMessage("Dieser Spieler ist nicht online.");
-            return;
-        }
-
-        this.tpaService.acceptRequest(target, sender);
+        this.tpaService.acceptRequest(target, args[0]);
     }
 
     @Override
