@@ -27,8 +27,6 @@ public class LobbyModule implements Module {
         plugin.getCommand("buildmode").setExecutor(new ToggleBuildMode());
         plugin.getCommand("quickmenu").setExecutor(new QuickMenu());
 
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
-
         serverConnector = new ServerConnector(plugin);
     }
 

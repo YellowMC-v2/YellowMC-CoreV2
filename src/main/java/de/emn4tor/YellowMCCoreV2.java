@@ -3,6 +3,7 @@ package de.emn4tor;
 import de.emn4tor.api.LocaleService;
 import de.emn4tor.api.MessageService;
 import de.emn4tor.api.TranslationService;
+import de.emn4tor.api.player.SyncService;
 import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
@@ -18,12 +19,16 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     private MessageService messageService;
     TranslationService translationService;
     LocaleService localeService;
+    private SyncService syncService;
 
     @Override
     public void onEnable() {
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         translationService = Bukkit.getServicesManager().load(TranslationService.class);
         localeService = Bukkit.getServicesManager().load(LocaleService.class);
         messageService = Bukkit.getServicesManager().load(MessageService.class);
+        syncService = Bukkit.getServicesManager().load(SyncService.class);
 
         if (translationService == null || localeService == null) {
             getLogger().severe("Failed to load TranslationService or LocaleService.");
@@ -85,4 +90,8 @@ public final class YellowMCCoreV2 extends JavaPlugin {
     public static LocaleService getLocaleService() {
         return getInstance().localeService;
     }
+
+    public static SyncService getSyncService() { return getInstance().syncService; }
+
+    public static String getServerName() {return getInstance().getConfig().getString("server-name");}
 }

@@ -1,5 +1,8 @@
 package de.emn4tor.modules.lobby.lobbyessentials.commands;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import de.emn4tor.YellowMCCoreV2;
 import de.emn4tor.modules.lobby.lobbyessentials.LobbyGUIHolder;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class QuickMenu implements CommandExecutor, Listener {
+    private final YellowMCCoreV2 plugin = YellowMCCoreV2.getInstance();
 
     private enum MenuButton {
         RTP("<green>RTP", Material.STICK, List.of(
@@ -162,7 +166,11 @@ public class QuickMenu implements CommandExecutor, Listener {
             }
             case BACK -> {
                 player.closeInventory();
-                player.performCommand("back");
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
+                out.writeUTF("Connect");
+                out.writeUTF("smp1");
+                player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
             }
             case HOMES -> {
                 player.closeInventory();
@@ -174,11 +182,11 @@ public class QuickMenu implements CommandExecutor, Listener {
             }
             case CRATES -> {
                 player.closeInventory();
-                player.teleport(new Location(player.getWorld(), -119, -73, 61, 90, 0));
+                player.teleport(new Location(player.getWorld(), -119, 61, -73, 90, 0));
             }
             case CASINO -> {
                 player.closeInventory();
-                player.sendRichMessage("<red>Das Casino öffnet bald! Bleib dran für Updates.");
+                player.sendRichMessage("<red>Das Casino ist aufgrund von EULA und MUGs derzeit geschlossen. Wir arbeiten an einer Lösung, um es so schnell wie möglich wieder zu öffnen. Danke für dein Verständnis!"); //TODO: Not translated
             }
 
             case REPORT_BUG -> {
