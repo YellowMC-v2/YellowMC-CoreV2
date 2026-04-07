@@ -51,7 +51,7 @@ dependencies {
     compileOnly ('com.github.Septicuss:tooltips:1.8')
 
     compileOnly "de.tr7zw:item-nbt-api-plugin:2.10.0"
-    compileOnly( 'com.sk89q.worldedit:worldedit-bukkit:7.3.0')
+    compileOnly( 'com.sk89q.worldedit:worldedit-bukkit:7.4.2')
     compileOnly "de.emn4tor:api:1.5.2-BETA"
 }
 
