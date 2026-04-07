@@ -18,10 +18,15 @@ public class EconomyHandler {
         setupEconomy();
     }
 
-    private static void setupEconomy() {
+    public static void setupEconomy() {
+        if (economy != null) return;
+
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp != null) {
             economy = rsp.getProvider();
+            Bukkit.getLogger().info("[EconomyHandler] Vault Economy successfully hooked!");
+        } else {
+            Bukkit.getLogger().severe("[EconomyHandler] Vault Economy NOT FOUND! Transactions will fail.");
         }
     }
 

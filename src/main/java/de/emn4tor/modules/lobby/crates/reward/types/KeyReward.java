@@ -1,5 +1,8 @@
 package de.emn4tor.modules.lobby.crates.reward.types;
 
+
+import de.emn4tor.YellowMCCoreV2;
+import de.emn4tor.modules.lobby.crates.CratesModule;
 import de.emn4tor.modules.lobby.crates.reward.BaseReward;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +16,12 @@ public class KeyReward extends BaseReward {
 
     @Override
     public void give(Player player) {
-        player.sendRichMessage("Not implemented yet, womp womp - no reward for you :P");
-        //TODO: Implement KeyReward logic
+        CratesModule module = CratesModule.getInstance();
+
+        if (module != null && module.getKeyRepository() != null) {
+            module.getKeyRepository().giveKeys(player.getUniqueId(), crateId, amount);
+
+            player.sendRichMessage("<gray>You received <yellow>" + amount + "x " + crateId + " <gray>Keys!");
+        }
     }
 }

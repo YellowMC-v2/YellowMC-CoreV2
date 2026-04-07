@@ -5,12 +5,14 @@ import com.nexomc.nexo.api.NexoItems;
 import de.emn4tor.modules.lobby.crates.model.Crate;
 import de.emn4tor.modules.lobby.crates.registry.CrateManager;
 import de.emn4tor.modules.lobby.crates.registry.CrateRegistry;
+import de.emn4tor.modules.lobby.crates.ui.CratePreviewGUI;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 @AllArgsConstructor
 public class CrateInteractListener implements Listener {
@@ -20,19 +22,21 @@ public class CrateInteractListener implements Listener {
     @EventHandler
     public void onCrateInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getClickedBlock() == null) return;
         if (!NexoFurniture.isFurniture(event.getClickedBlock().getLocation())) return;
 
         registry.getCrateAt(event.getClickedBlock().getLocation()).ifPresent(crate -> {
             event.setCancelled(true);
 
-            handleCrateClick(event.getPlayer(), crate);
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                crateManager.openCrate(player, crate);
+            } else
+            if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                new CratePreviewGUI(crate).open(player);
+            }
         });
 
     }
 
-    private void handleCrateClick(Player player, Crate crate) {
-        crateManager.openCrate(player, crate);
-    }
 }

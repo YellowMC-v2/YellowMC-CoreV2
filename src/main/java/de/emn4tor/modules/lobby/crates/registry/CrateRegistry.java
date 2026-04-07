@@ -63,7 +63,6 @@ public class CrateRegistry {
                     .holoGramLocation(holoLoc)
                     .particleEffect(Particle.valueOf(config.getString("particle", "VILLAGER_HAPPY")))
                     .keyItem(config.getItemStack("key-item"))
-                    .hasPhysicalKey(config.getBoolean("has-physical-key"))
                     .hasParticleEffect(config.getBoolean("has-particle-effect"))
                     .rewards(rewards)
                     .build();

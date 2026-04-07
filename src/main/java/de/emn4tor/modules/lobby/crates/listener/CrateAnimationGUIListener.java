@@ -1,11 +1,18 @@
 package de.emn4tor.modules.lobby.crates.listener;
 
+import de.emn4tor.modules.lobby.crates.registry.CrateManager;
 import de.emn4tor.modules.lobby.crates.ui.CrateInvHolder;
+import lombok.AllArgsConstructor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
+@AllArgsConstructor
 public class CrateAnimationGUIListener implements Listener {
+    private final CrateManager crateManager;
+
 
     @EventHandler
     public void onCrateGUIClick(InventoryClickEvent event) {
@@ -15,9 +22,12 @@ public class CrateAnimationGUIListener implements Listener {
     }
 
     @EventHandler
-    public void onCrateGUIClose(InventoryClickEvent event) {
+    public void onCrateGUIClose(InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof CrateInvHolder) {
-            event.setCancelled(true); //TODO: stopping the animation and giving the reward if the player closes the inventory
+            Player player = (Player) event.getPlayer();
+            if (event.getView().getTitle().contains("Opening")) {
+                crateManager.handleGUIClose(player);
+            }
         }
     }
 }

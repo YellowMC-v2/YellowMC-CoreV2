@@ -8,10 +8,12 @@ import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
+import de.emn4tor.utils.holograms.HologramManager;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,12 +23,14 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
     @Getter private LuckPerms luckPerms;
 
+    @Getter HologramManager hologramManager;
     @Getter private static ModuleManager moduleManager;
     @Getter private static RedisManager redisManager;
     @Getter private static MessageService messageService;
     @Getter private static TranslationService translationService;
     @Getter private static LocaleService localeService;
     @Getter private static SyncService syncService;
+
 
     @Override
     public void onEnable() {
@@ -37,6 +41,8 @@ public final class YellowMCCoreV2 extends JavaPlugin {
         ConfigLoader.load();
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
+        this.hologramManager = new HologramManager(this).init();
+
         if (!loadServices()) return;
         if (!initSQL()) return;
 
@@ -45,6 +51,8 @@ public final class YellowMCCoreV2 extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         getLogger().info("YellowMC Core enabled successfully.");
+
+
     }
 
     @Override

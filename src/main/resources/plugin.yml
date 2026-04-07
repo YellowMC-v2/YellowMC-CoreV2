@@ -5,13 +5,21 @@ api-version: '1.21'
 authors: [ Emn4tor ]
 softdepend:
   - LuckPerms
-  - Nexo
 depend:
   - YellowMC-API
+  - Nexo
 
 commands:
   hello:
     description: A simple hello command
+
+  hologram:
+    description: Hologram management command
+    usage: /holograms <subcommand>
+    aliases:
+      - holo
+      - holograms
+    permission: core.holograms
 
 
   debugfurniture:
@@ -272,6 +280,10 @@ commands:
     aliases: [qm]
   claim:
     description: Claim a chunk of land.
+
+  crates:
+    description: Manage crates
+    permission: core.crates
 
 
 permissions:
