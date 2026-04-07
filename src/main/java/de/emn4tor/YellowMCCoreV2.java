@@ -8,61 +8,51 @@ import de.emn4tor.commons.JoinListener;
 import de.emn4tor.config.ConfigLoader;
 import de.emn4tor.data.RedisManager;
 import de.emn4tor.data.SQLManager;
+import de.emn4tor.utils.holograms.HologramManager;
+import lombok.Getter;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class YellowMCCoreV2 extends JavaPlugin {
 
-    private ModuleManager moduleManager;
-    private RedisManager redisManager;
+    @Getter private static YellowMCCoreV2 instance;
 
-    private MessageService messageService;
-    TranslationService translationService;
-    LocaleService localeService;
-    private SyncService syncService;
+    @Getter private LuckPerms luckPerms;
+
+    @Getter HologramManager hologramManager;
+    @Getter private static ModuleManager moduleManager;
+    @Getter private static RedisManager redisManager;
+    @Getter private static MessageService messageService;
+    @Getter private static TranslationService translationService;
+    @Getter private static LocaleService localeService;
+    @Getter private static SyncService syncService;
+
 
     @Override
     public void onEnable() {
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        instance = this;
 
-        translationService = Bukkit.getServicesManager().load(TranslationService.class);
-        localeService = Bukkit.getServicesManager().load(LocaleService.class);
-        messageService = Bukkit.getServicesManager().load(MessageService.class);
-        syncService = Bukkit.getServicesManager().load(SyncService.class);
+        this.luckPerms = LuckPermsProvider.get();
 
-        if (translationService == null || localeService == null) {
-            getLogger().severe("Failed to load TranslationService or LocaleService.");
-            return;
-        }
-
-        //Load configuration
-        getLogger().info("Loading configuration...");
         ConfigLoader.load();
-        getLogger().info("Configuration loaded successfully.");
-        //Initialize HikariCP SQLManager
-        getLogger().info("Initializing SQLManager...");
-        try {
-            SQLManager.init(getConfig());
-        }
-        catch (Exception e) {
-            for (int i = 0; i < 10; i++) {
-                getLogger().severe("Failed to initialize SQLManager - PLUGIN WILL CRASH - ONLY FOR DEBUGGING " + e.getMessage());
-            }
-        }
-        getLogger().info("SQLManager initialized successfully.");
-        getLogger().info("Core plugin initialized...");
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        //Initialize RedisManager
-        redisManager = RedisManager.getInstance();
-        redisManager.connect(getConfig());
+        this.hologramManager = new HologramManager(this).init();
 
-        //Register modules
-        moduleManager = new ModuleManager();
+        if (!loadServices()) return;
+        if (!initSQL()) return;
 
-        moduleManager.discoverModules();
-        moduleManager.enableModules(this);
+        initRedis();
+        initModules();
 
-        Bukkit.getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+        getLogger().info("YellowMC Core enabled successfully.");
+
+
     }
 
     @Override
@@ -71,27 +61,48 @@ public final class YellowMCCoreV2 extends JavaPlugin {
             moduleManager.disableModules(this);
         }
         SQLManager.getInstance().close();
+        getLogger().info("YellowMC Core disabled.");
     }
 
-    public static YellowMCCoreV2 getInstance() {
-        return JavaPlugin.getPlugin(YellowMCCoreV2.class);
+    private boolean loadServices() {
+        translationService = Bukkit.getServicesManager().load(TranslationService.class);
+        localeService      = Bukkit.getServicesManager().load(LocaleService.class);
+        messageService     = Bukkit.getServicesManager().load(MessageService.class);
+        syncService        = Bukkit.getServicesManager().load(SyncService.class);
+
+        if (translationService == null || localeService == null) {
+            getLogger().severe("Failed to load TranslationService or LocaleService. Disabling plugin.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return false;
+        }
+        return true;
     }
 
-    public static RedisManager getRedisManager() {
-        return getInstance().redisManager;
+    private boolean initSQL() {
+        getLogger().info("Initializing SQLManager...");
+        try {
+            SQLManager.init(getConfig());
+            getLogger().info("SQLManager initialized successfully.");
+            return true;
+        } catch (Exception e) {
+            getLogger().severe("Failed to initialize SQLManager: " + e.getMessage());
+            Bukkit.getPluginManager().disablePlugin(this);
+            return false;
+        }
     }
 
-    public static MessageService getMessageService() {return getInstance().messageService;}
-
-    public static TranslationService getTranslationService() {
-        return getInstance().translationService;
+    private void initRedis() {
+        redisManager = RedisManager.getInstance();
+        redisManager.connect(getConfig());
     }
 
-    public static LocaleService getLocaleService() {
-        return getInstance().localeService;
+    private void initModules() {
+        moduleManager = new ModuleManager();
+        moduleManager.discoverModules();
+        moduleManager.enableModules(this);
     }
 
-    public static SyncService getSyncService() { return getInstance().syncService; }
-
-    public static String getServerName() {return getInstance().getConfig().getString("server-name");}
+    public static String getServerName() {
+        return getInstance().getConfig().getString("server-name");
+    }
 }
