@@ -1,14 +1,8 @@
 package de.emn4tor.modules.global.economy;
 
-/*
- *  @author: Emn4tor
- *  @created: 19.08.2025
- */
-
 import de.emn4tor.Module;
 import de.emn4tor.ModuleInfo;
 import de.emn4tor.YellowMCCoreV2;
-import de.emn4tor.modules.global.economy.coins.api.EconomyManager;
 import de.emn4tor.modules.global.economy.coins.commands.BalanceCommand;
 import de.emn4tor.modules.global.economy.coins.commands.PayCommand;
 import de.emn4tor.modules.global.economy.rubies.RubiesCommand;
@@ -16,17 +10,15 @@ import de.emn4tor.modules.global.economy.rubies.RubyHandler;
 
 @ModuleInfo(name = "EconomyModule", priority = 1)
 public class EconomyModule implements Module {
-    private static EconomyManager economyManager;
 
     @Override
     public void onEnable(YellowMCCoreV2 plugin) {
-        economyManager = new EconomyManager(plugin);
-        economyManager.initialize();
-        plugin.getCommand("balance").setExecutor(new BalanceCommand(economyManager));
-        plugin.getCommand("pay").setExecutor(new PayCommand(economyManager, YellowMCCoreV2.getRedisManager()));
-        plugin.getCommand("ecoadmin").setExecutor(new AdminCommand(economyManager));
+        var coinService = YellowMCCoreV2.getCoinService();
 
-        //Rubies
+        plugin.getCommand("balance").setExecutor(new BalanceCommand(coinService));
+        plugin.getCommand("pay").setExecutor(new PayCommand(coinService));
+        plugin.getCommand("ecoadmin").setExecutor(new AdminCommand(coinService));
+
         RubyHandler.init(plugin);
         RubyHandler.initialize();
         plugin.getCommand("rubies").setExecutor(new RubiesCommand());
@@ -35,10 +27,4 @@ public class EconomyModule implements Module {
     @Override
     public void onDisable(YellowMCCoreV2 plugin) {
     }
-
-    public static EconomyManager getEconomyManager() {
-        return economyManager;
-    }
-
-
 }
