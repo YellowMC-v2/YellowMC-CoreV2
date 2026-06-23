@@ -49,7 +49,7 @@ dependencies {
 
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-    compileOnly("com.github.Septicuss:tooltips:1.8")
+    compileOnly("com.github.Septicuss:tooltips:2.8")
     compileOnly("com.nexomc:nexo:1.17.0")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
     compileOnly("de.emn4tor:api:1.5.2-BETA")
