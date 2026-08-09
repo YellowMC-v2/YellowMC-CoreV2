@@ -51,7 +51,7 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("com.github.Septicuss:tooltips:1.8")
     compileOnly("com.nexomc:nexo:1.17.0")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.5")
     compileOnly("de.emn4tor:api:1.5.2-BETA")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.10.0")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
